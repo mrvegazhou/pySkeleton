@@ -1,0 +1,5 @@
+<div class='message bubble-{directing}' id="m{{ message["id"] }}">
+    <label class='message-user'>{{ message['user_name'] }}</label>
+    <label class='message-timestamp'>{{ message['time'] }}</label>
+    <p>{% module linkify(message["body"]) %}</p>
+</div>

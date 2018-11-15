@@ -1,0 +1,615 @@
+{% extends ../base.html %}
+{% block js_head_content %}
+{% end %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-9">
+        <ol class="breadcrumb">
+          <li><a href="/feedback">反馈列表</a></li>
+          <li class="active">问答详情</li>
+        </ol>
+        <div class="feedback-question-info">
+            <div class="author">
+                <a href="/ucenter/{{ context.feedback_info['uid'] }}" target="_blank">
+                    <img src="/avatar/{{ context.feedback_info['user_info']['avatar'] }}" alt="">
+                    <span class="author-name">{{ context.feedback_info['user_info']['user_name'] }}</span>
+                </a>
+                <span>{{ context.feedback_info['publish_time'] }} 发表</span>
+            </div>
+            <h1 class="h3 question-title">
+                <a href="javascript:void(0);">{{ context.feedback_info['title'] }}</a>
+            </h1>
+            <div class="col-md-12">
+                <article class="question-content">
+                    <div class="feedback-vote" id="main-vote">
+                        <span title="{{ context.feedback_info['approval_votes'] }}" class="glyphicon glyphicon-thumbs-up vote-up-off" style="margin-bottom: 30px;" onclick="likeOperate('feedback', {{ context.feedback_info['id'] }},'like', this);"></span>
+                        <span class="count" id="count-{{ context.feedback_info['id'] }}">{{ context.feedback_info['approval_votes'] }}</span>
+                        <span title="{{ context.feedback_info['oppose_votes'] }}" class="glyphicon glyphicon-thumbs-down vote-down-off" onclick="likeOperate('feedback', {{ context.feedback_info['id'] }}, 'unlike', this);"></span>
+                    </div>
+                    <div style="margin:25px 0 0 50px;clear: both;">
+                        <div class="fmt">
+                            <p>{% raw context.feedback_info['content'] %}</p>
+                        </div>
+                    </div>
+
+                    <ul class="taglist">
+                        {% for (k,v) in context.feedback_info['tags'].items() %}
+                        <li class="tagPopup">
+                            <a class="tag" href="/feedback/?tag={{ v['id'] }}">{{ v['name'] }}</a>
+                        </li>
+                        {% end %}
+                    </ul>
+                </article>
+                <div class="answers" id="end_ele">
+                    <div class="answers-header">
+                        <h2>
+                            <span id="comment-total">{{ context.comment_total }}</span> 讨论
+                            <span style="display:none;" itemprop="answerCount">1</span>
+						</h2>
+                    </div>
+                    <div id="show_comments">
+                        {% for (k, v) in context.comments.items() %}
+                        <article class="clearfix answers-content">
+                            <div class="feedback-vote" style="margin-top: 0;">
+                                <span title="{{ v['approval_votes'] }}" class="glyphicon glyphicon-thumbs-up vote-up-off" style="margin-bottom: 30px;" onclick="likeOperate('feedback_comment', {{ v['id'] }},'like', this);"></span>
+                                <span class="count" id="count-{{ v['id'] }}">{{ v['approval_votes'] }}</span>
+                                <span title="{{ v['oppose_votes'] }}" class="glyphicon glyphicon-thumbs-down vote-down-off" onclick="likeOperate('feedback_comment', {{ v['id'] }},'unlike', this);"></span>
+                            </div>
+
+                            <div style="margin-left: 50px;">
+                                <a href="/ucenter/{{ v['uid'] }}" style="float: left;">
+                                    <img class="avatar-30" src="/avatar/{{ v['commenter']['avatar'] }}" alt="">
+                                </a>
+                                <a href="/ucenter/{{ v['uid'] }}" class="ml10 f12">{{ v['commenter']['user_name'] }}</a>
+                                <span class="ml10 text-muted f12">
+                                    {{ v['create_time'] }} 回答
+                                </span>
+                                <div class="fmt mt20">
+                                    <p>{% raw v['comment'] %}</p>
+                                </div>
+                                <ul class="list-inline" style="float:right;">
+                                    <li><a href="javascript:void(0);" onclick="showReply({{ v['id'] }}, this);">评论</a></li>
+                                    <li><a href="javascript:void(0);" onclick="showComments({{ v['id'] }});">查看(<span id='reply-comment-total-{{ v['id'] }}'>{{ v['reply_count'] }}</span>)</a></li>
+                                    <li><a href="javascript:void(0);" class="comments" onclick="accuseOperate({{ v['id'] }}, 'show');">举报</a></li>
+                                </ul>
+                                <br/>
+
+                                <!-- begin reply-->
+                                <div class="clearfix quick-reply-comments" style="display: none;" id="reply-form-{{ v['id'] }}">
+                                    <form class="col-md-10 col-xs-12">
+                                        <div class="form-group mb5 mt5">
+                                            <textarea id="comment_{{ v['id'] }}" class="form-control" placeholder="添加评论" style="overflow: hidden; word-wrap: break-word; height: 28px;"></textarea>
+                                        </div>
+                                        <input type="hidden" value="{{ v['id'] }}" id="ancestor_id_{{ v['id'] }}">
+                                        <input type="hidden" value="{{ v['id'] }}" id="pid_{{ v['id'] }}">
+                                        <input type="hidden" value="{{ v['uid'] }}" id="comment_uid_{{ v['id'] }}">
+                                        <input type="hidden" value="{{ context.feedback_info['id'] }}" id="feedback_id_{{ v['id'] }}">
+                                    </form>
+                                    <div class="col-md-2 col-xs-12 mt5">
+                                        <button type="button" class="btn btn-primary btn-sm btn-block" onclick="comment({{ v['id'] }});">提交评论
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- end reply-->
+
+                                <!--begin show comments reply-->
+                                {% if v['reply_list'] %}
+                                <div class="clearfix reply-comments-box" id="reply-comment-{{ v['id'] }}" style="display: none;">
+                                    <i class="fa fa-sort-up comments-up-arrow"></i>
+                                    <div class="reply-comment-list">
+                                        {% for i in v['reply_list'] %}
+                                        <div class="clearfix reply-comment-item">
+                                            <a title="{{ i['commenter']['user_name'] }}" class="comment-item-avatar" href="/ucenter/{{ i['commenter']['id'] }}">
+                                                <img src="/avatar/{{ i['commenter']['avatar'] }}" class="item-img-avatar">
+                                            </a>
+                                            <div class="comment-content-wrap">
+                                                <div class="comment-hd">
+                                                    <a href="/ucenter/{{ i['commenter']['id'] }}" class="" title="{{ i['commenter']['user_name'] }}">{{ i['commenter']['user_name'] }}</a>
+                                                    <span style="color: #999;margin-left: 5px;">{{ i['create_time'] }} 评论&nbsp;&nbsp;&nbsp;<a href="/ucenter/{{ i['to_user_id'] }}">@{{ i['to_user_name'] }}</a></span>
+                                                </div>
+                                                <div class="reply-comment-content">
+                                                    {% raw i['comment'] %}
+                                                </div>
+                                                <div class="comment-ft">
+                                                    <a href="javascript:void(0);" onclick="replyComment({{ i['id'] }}, {{ v['id'] }}, this);">回复</a>
+                                                    <a href="javascript:void(0);" onclick="likeOperate('feedback_comment', {{ i['id'] }}, 'like', this);">
+                                                        赞(<span style="font-size:11px;" id="reply-favour-{{ i['id'] }}">0</span>)
+                                                    </a>
+                                                    <a href="javascript:void(0);" onclick="accuseOperate({{ i['id'] }}, 'show');">举报</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% end %}
+                                    </div>
+                                </div>
+                                {% end %}
+                                <!--end show comments reply-->
+                            </div>
+                        </article>
+                        {% end %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" value="{{ context.page }}" id="page" />
+        {% if context.show_more %}
+        <div class="col-xs-12 text-center mt30" id="more-comment-btn">
+            <a class="bg-info a-center" style="padding:3px 60px;" onclick="showMoreCommentList({{ context.feedback_info['id'] }});">查看更多</a>
+        </div>
+        {% end %}
+    </div>
+    <!-- begin 评论框 -->
+    <div class="col-md-9 mt30">
+        <form id="feedback-comment-form">
+            <div class="form-group">
+                <label for="editor_comment">评论:</label>
+                <script type="text/plain" id="editor_comment" name="editor_comment"></script>
+            </div>
+            {% module xsrf_form_html() %}
+            <div class="form-group" id="feedback-comment-form-captcha" {% if context.is_need_captcha!=1 %}style="display: none;"{% end %}>
+                <label for="captcha" style="float:left;display: inline;margin-right: 10px;">验证码:</label>
+                <input type="text" class="form-control" style="float:left;width: 75px;" name="captcha" id="captcha">
+                <img src="/show/captcha/validate.gif?r={{ context.r }}" style="float:left;margin-left:3px;" onclick="flushCaptcha(this);" id="captcha_img"/>
+                <br/><br/>
+            </div>
+            <div class="clearfloat"></div>
+            <input type="hidden" value="{{ context.feedback_info.id }}" name="feedback_id">
+            <button type="button" onclick="feedbackCommentSubmit();" class="btn btn-default btn-sm">提交</button>
+            <span style="margin-left:20px;" id="submit-comment"></span>
+        </form>
+    </div>
+    <!-- end 评论框 -->
+</div>
+<div class="clearfix" style="margin-top:20px;background-color: #F6F6F6;padding:0 3px 3px 3px;display: none;" id="reply-comment-form">
+    <span style="width: 25px;border-top: 2px solid #ffc20e;margin-right: 73px;top:0;float:right;">&nbsp;&nbsp;&nbsp;</span>
+    <div class="comment-editable" aria-label="写下你的回复" contenteditable="true"></div>
+    <div style="float:right;">
+        <a class="btn btn-default btn-xs" href="#" role="button">评论</a>
+        <a class="btn btn-default btn-xs" href="#" role="button">取消</a>
+    </div>
+    <div class="clearfix"></div>
+</div>
+{% end %}
+
+{% block js_content %}
+<script type="text/javascript" src="/static/js/UEditor/ueditor.config.js"></script>
+<script type="text/javascript" src="/static/js/UEditor/ueditor.all.js"></script>
+<script type="text/javascript" src="/static/js/tools.js"></script>
+<script>
+(function($){
+    //评论框
+    UE.getEditor('editor_comment', {
+        //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个
+        toolbars:[['undo', 'redo', '|',
+                'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'removeformat', 'blockquote', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
+                'customstyle', 'fontfamily', 'fontsize', '|', 'directionalityltr', 'directionalityrtl', 'indent', '|',
+                'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
+                'link', 'unlink', '|', 'simpleupload', 'emotion', 'insertcode', 'template', '|',
+                'date', 'time', 'spechars', 'wordimage', '|',
+                'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts'
+                ]],
+        serverUrl: '/server/editor',
+        //初始化高度
+        initialFrameHeight:200,
+        //focus时自动清空初始化时的内容
+        autoClearinitialContent:true,
+        //关闭字数统计
+        wordCount:false,
+        //关闭elementPath
+        elementPathEnabled:false,
+        autoFloatEnabled:false
+    });
+})(jQuery)
+function showReply(id, obj){
+    var $show_form = $("#reply-form-"+id);
+    if( $show_form.length>0 ){
+        $show_form.toggle();
+        $(obj).toggleClass('bbrd');
+    }
+}
+function showComments(id){
+    var $show_comment = $('#reply-comment-'+id);
+    if( $show_comment.length>0 ){
+        $show_comment.toggle();
+    }
+}
+//评论发表评论的
+function comment(id){
+    var opts = {'title':'提示', 'width': '100px', 'height': '45px', 'btn_ok_text':'', 'btn_cancel_text': '确认', 'id': 'feedback-comment-fn'};
+    var d = new Dialog(opts);
+    var reply_form = $('#reply-form-'+id);
+    reply_form.find(':button').keypress(function(e) {
+      if (e.which == 13) {
+        return false;
+      }
+    });
+    var ancestor_id = reply_form.find('#ancestor_id_'+id).val();
+    var pid = reply_form.find('#pid_'+id).val();
+    var feedback_id = reply_form.find('#feedback_id_'+id).val();
+    var comment = reply_form.find('#comment_'+id).val();
+    var comment_uid = reply_form.find('#comment_uid_'+id).val();
+    var error = '';
+    if($.trim(comment)=='')
+    {
+        error = '评论不能为空';
+    }
+    if(feedback_id==''){
+        if(error!='')
+            error = ',';
+        error += '反馈信息不能为空';
+    }
+    if(error!=''){
+        d.init(error);
+        return;
+    }
+    $.ajax({
+        type: "POST",
+        url: "/feedback/reply",
+        data: {ancestor_id: ancestor_id, pid:pid, feedback_id:feedback_id, comment:comment, comment_uid:comment_uid, _xsrf: getCookie("_xsrf")},
+        dataType: "json",
+        success: function (data) {
+            var content = '';
+            //动态生成评论
+            if( data.code=='success' ){
+                content = '评论成功，点击查看评论列表';
+                $('#reply-comment-total-'+data.res.p_comment_id).html(parseInt($('#reply-comment-total-'+data.res.p_comment_id).html())+1);
+                var tmp = '';
+                if( $('#reply-comment-'+data.res.p_comment_id).length<=0 ){
+                    tmp = '<div class="clearfix reply-comments-box" id="reply-comment-'+data.res.p_comment_id+'" style="display: none;"> \
+                                <i class="fa fa-sort-up comments-up-arrow"></i> \
+                                <div class="reply-comment-list"> \
+                                </div> \
+                            </div>';
+                    $('#reply-form-'+data.res.p_comment_id).after(tmp);
+                    delete tmp;
+                }
+                $('#reply-comment-'+data.res.p_comment_id).find('.reply-comment-list').prepend(replyStr(data.res));
+                //清除评论框内容
+                reply_form.find('#comment_'+id).val('');
+            } else {
+                content = data.msg;
+            }
+            d.init(content);
+        }
+    });
+}
+//返回回复列表item
+function replyStr(item) {
+    return '<div class="clearfix reply-comment-item"> \
+                <a title="'+item['user_name']+'" class="comment-item-avatar" href="/ucenter/'+item['fcid']+'"> \
+                    <img src="'+item['avatar']+'" class="item-img-avatar"> \
+                </a> \
+                <div class="comment-content-wrap"> \
+                    <div class="comment-hd"> \
+                        <a href="/ucenter/'+item['fcid']+'" class="" title="'+item['user_name']+'">'+item['user_name']+'</a> \
+                        <span style="color: #999;margin-left: 5px;">'+item['create_time']+' 评论&nbsp;&nbsp;&nbsp;<a href="/ucenter/'+item['to_user_id']+'">@'+item['to_user_name']+'</a></span> \
+                    </div> \
+                    <div class="reply-comment-content"> \
+                        '+item['comment']+' \
+                    </div> \
+                    <div class="comment-ft"> \
+                        <a href="javascript:void(0);" onclick="replyComment('+item['fcid']+', '+item['feedback_id']+', this);">回复</a> \
+                        <a href="javascript:void(0);"> \
+                            赞<span style="font-size:11px;">(0)</span> \
+                        </a> \
+                        <a href="javascript:void(0);" onclick="accuseOperate('+item['fcid']+', \'show\');">举报</a> \
+                    </div> \
+                </div> \
+            </div>';
+}
+
+function replyComment(id, ancestor_id, obj){
+    $div = $('#reply-comment-form');
+    $move_div = $(obj).parent().siblings("#reply-comment-form");
+    if( $move_div.length>0 ){
+        if($move_div.css('display')=='block'){
+            $(obj).parent().siblings("#reply-comment-form").hide();
+            return;
+        }
+    }
+    if( $('input[name="feedback_comment_id"]',$div).length>0 ){
+        $('input[name="feedback_comment_id"]',$div).remove();
+    }
+    $div.append("<input type='hidden' value='"+id+"' name='feedback_comment_id'/>");
+    $(obj).parent().after($div.show());
+}
+
+$('#main-vote').stopOnTop('end_ele', {
+                                        'left': '0px',
+                                        'width': '38px',
+                                        'float': 'none',
+                                        'position': 'absolute',
+                                        'margin-top': '10px'
+                                    });
+
+//异步加载评论列表
+function showMoreCommentList( fid ) {
+    var page = parseInt($('#page').val());
+    $.ajax({
+             type: "POST",
+             url: "{{ context.show_more_url }}",
+             data: {fid: fid, page: page+1, _xsrf: getCookie("_xsrf")},
+             dataType: "json",
+             success: function(data){
+                    var html = '';
+                    if(data.code=='success'){
+                        var list = data.res;
+                        $.each(list.comments, function(idx, cmt){
+                            html += '<article class="clearfix answers-content">'
+                                //赞操作
+                                + '<div class="feedback-vote" style="margin-top: 0;">'
+                                +   '<span title="' + cmt.approval_votes + '" class="glyphicon glyphicon-thumbs-up vote-up-off" style="margin-bottom: 30px;" onclick="likeOperate(\'feedback_comment\' ,'+ cmt.id +', \'like\', this);">'
+                                +       '<span class="count" id="count-'+cmt.id+'">' + cmt.approval_votes + '</span></span>'
+                                +   '<span title="' + cmt.oppose_votes + '" class="glyphicon glyphicon-thumbs-down vote-down-off" onclick="likeOperate(\'feedback_comment\' ,'+ cmt.id +',\'unlike\', this);"></span>'
+                                + '</div>'
+                                + '<div style="margin-left: 50px;">'
+                                +   '<a href="/ucenter/'+ cmt.uid +'" style="float: left;"><img class="avatar-30" src="/avatar/'+ cmt.commenter.avatar +'" alt=""></a>'
+                                +   '<a href="/ucenter/'+ cmt.uid +'" class="ml10 f12">'+ cmt.commenter.user_name +'</a>'
+                                +   '<span class="ml10 text-muted f12">'+ cmt.create_time +' 回答</span>'
+                                +   '<div class="fmt mt20"><p>'+ cmt.comment +'</p></div>'
+                                +   '<ul class="list-inline" style="float:right;">'
+                                +       '<li><a href="javascript:void(0);" onclick="showReply('+cmt.id+', this);">评论</a></li>'
+                                +       '<li><a href="javascript:void(0);" onclick="showComments('+cmt.id+');">查看('+cmt.reply_count+')</a></li>'
+                                +       '<li><a href="javascript:void(0);" class="comments" onclick="accuseOperate('+cmt.id+', \'show\');">举报</a></li>'
+                                +   '</ul>'
+                                +   '<br/>'
+                                +   '<!-- begin reply-->'
+                                +   '<div class="clearfix quick-reply-comments" style="display: none;" id="reply-form-'+ cmt.id +'">'
+                                +       '<form class="col-md-10 col-xs-12">'
+                                +           '<div class="form-group mb5 mt5">'
+                                +               '<textarea name="text" class="form-control" placeholder="添加评论" style="overflow: hidden; word-wrap: break-word; height: 28px;"></textarea>'
+                                +           '</div>'
+                                +       '</form>'
+                                +       '<div class="col-md-2 col-xs-12 mt5">'
+                                +           '<button type="submit" class="btn btn-primary btn-sm btn-block" onclick="comment('+ cmt.id +');">提交评论</button>'
+                                +       '</div>'
+                                +   '</div>'
+                                +   '<!-- end reply-->';
+                            if((cmt.reply_list).length>0){
+                                var rpy = cmt.reply_list;
+                                var ancestor_id = cmt.id;
+                                html +=     '<!--begin show comments reply-->'
+                                        +   '<div class="clearfix reply-comments-box" id="reply-comment-'+ cmt.id +'" style="display: none;">'
+                                        +       '<i class="fa fa-sort-up comments-up-arrow"></i>'
+                                        +       '<div class="reply-comment-list">'
+                                $.each(rpy, function(i, v){
+                                    html +=         '<div class="clearfix reply-comment-item">'
+                                            +           '<a title="'+ v.commenter.avatar +'" class="comment-item-avatar" href="/ucenter/'+ v.commenter.id +'">'
+                                            +               '<img src="/avatar/'+ v.commenter.avatar +'" class="item-img-avatar">'
+                                            +           '</a>'
+                                            +           '<div class="comment-content-wrap">'
+                                            +               '<div class="comment-hd">'
+                                            +               '<a href="/ucenter/'+ v.commenter.id +'" class="" title="'+ v.commenter.user_name +'">'+ v.commenter.user_name +'</a>'
+                                            +               '<span style="color: #999;margin-left: 5px;">'+ v.create_time +' 评论</span>'
+                                            +            '</div>'
+                                            +            '<div class="reply-comment-content">'
+                                            +               v.comment
+                                            +            '</div>'
+                                            +            '<div class="comment-ft">'
+                                            +               '<a href="javascript:void(0);" onclick="replyComment('+ v.id +', '+ ancestor_id +',this);">回复</a>'
+                                            +               '<a href="javascript:void(0);" onclick="likeOperate(\'feedback_comment\' ,'+ v.id +', \'like\', this);">'
+                                            +                   '赞<span style="font-size:11px;">('+ v.approval_votes +')</span>'
+                                            +               '</a>'
+                                            +               '<a href="javascript:void(0);" onclick="accuseOperate('+ v.id +', \'show\');">举报</a>'
+                                            +             '</div>'
+                                            +         '</div>'
+                                });
+                                        +           '</div>'
+                                        +       '</div>'
+                                        +   '</div>'
+                                        +   '<!--end show comments reply-->';
+                            }
+                            html += '</div>'
+                                + '</article>';
+                        });
+                        $('#show_comments').append(html);
+                        if(list.show_more==0) {
+                            $('#more-comment-btn').remove();
+                        } else {
+                            $('#page').val(page+1);
+                        }
+                    }
+             }
+
+         });
+}
+//赞
+var t;
+var times = 1;
+function likeOperate( feedback_type, fid, type, obj ) {
+    if( $.inArray($.trim(type), ['like', 'unlike'])==-1 ){
+        return false;
+    }
+    if( $.inArray($.trim(feedback_type), ['feedback', 'feedback_comment'])==-1 ){
+        return false;
+    }
+    var func = function(feedback_type, fid, type, obj) {
+        $.ajax({
+            type: "POST",
+            url: "/feedback/like",
+            data: {fid: fid, _xsrf: getCookie("_xsrf"), type: type, feedback_type: feedback_type},
+            dataType: "json",
+            success: function(data){
+                if(data.code=='success'){
+                    if( feedback_type=='feedback' ) {
+                        if( data.type=='like' ) {
+                            $('#count-'+fid).html(parseInt($('#count-'+fid).html())+1);
+                        } else {
+                            $('#count-'+fid).html(parseInt($('#count-'+fid).html())-1);
+                        }
+                    } else {
+                        if( data.type=='like' ) {
+                            $('#reply-favour-'+fid).html(parseInt($('#reply-favour-'+fid).html())+1);
+                        }
+                    }
+                }
+                if(data.msg!='') {
+                    var content = data.msg;
+                    data.type=='like' ? gravity = 's' : gravity = 'n';
+                    var tmp_tip = $(obj).tip({content:content, gravity:gravity, trigger:'show', id:fid, html:true, 'color': '#EFF6FA'});
+                    tmp_tip.fadeOut(600);
+                }
+            }
+        });
+    }
+    if( times==1 ) {
+        func(feedback_type, fid, type, obj);
+    } else {
+        clearTimeout(t);
+        t = setTimeout(function(){
+            func(feedback_type, fid, type, obj);
+        }, {{ context.relay_click_time }});
+    }
+    times++;
+}
+
+//举报
+function accuseOperate( fcid, type ) {
+    if(typeof arguments[2]=='undefined'){
+        var opts = {'title':'提示', 'width': '250px', 'height': '50px', 'id': 'feedback-comment-accuse-fn'};
+        opts['content'] = '原因：<textarea name="reason" id="reason" style="vertical-align: middle; margin-top: -10px;width:200px;"></textarea>';
+        var d = new Dialog(opts);
+    }
+    if(type=='show') {
+        that = d.init();
+        d.bind_func('ok', function(){
+            accuseOperate(fcid, 'done', that);
+        });
+        return;
+    } else {
+        if(typeof arguments[2]=='undefined')
+            return;
+        else
+            obj = arguments[2];
+        var reason = $('#reason').val();
+        $.ajax({
+            type: "POST",
+            url: "/feedback/complaint",
+            data: {fcid: fcid, reason: reason, _xsrf: getCookie("_xsrf")},
+            dataType: "json",
+            success: function(data) {
+                that = obj.init(data.msg);
+                obj.find('.btn_ok').unbind().click(function(){
+                    that.closed();
+                });
+            }
+        });
+    }
+}
+//验证评论内容是为空
+function checkUEContent(){
+    if(''==UE.getEditor('editor_comment').getContent()){
+        return false;
+    }
+    return true;
+}
+
+//发表评论
+function feedbackCommentSubmit()
+{
+    $('#feedback-comment-form').formValidate(
+        [
+            {name: 'editor_comment', rules: '', customs: [{'method':checkUEContent, 'message':'评论不能为空', 'param': {} }]},
+            //{name: 'captcha', rules: 'required', display:'验证码'}
+        ],
+        function(errors){
+            if(errors.length==0) {
+                $.ajax({
+                    type: "POST",
+                    url: '/feedback/comment',
+                    data: $('#feedback-comment-form').serialize(),
+                    dataType:"json",
+                    success: function(data) {
+                        //判断是否需要验证码
+                        if(data.is_need_captcha==1){
+                            $('#feedback-comment-form-captcha').css('display', 'block');
+                        }
+                        if( data.code!='success' ){
+                            $('#submit-comment').css('color', 'red');
+                            if(data.num=='034'){
+                                flushCaptcha('#captcha_img');
+                                $('#captcha').val('');
+                            }
+                            $('#submit-comment').html(data.msg);
+                            return;
+                        } else {
+                            $('#submit-comment').css('color', 'black');
+                            $('#submit-comment').html(data.msg);
+                        }
+
+                        if(data.url){
+                            location.href = data.url;
+                        } else {
+                            //动态添加评论
+                            var res = data.res;
+                            //动态添加评论到列表
+                            var comment_html =  '<article class="clearfix answers-content" id="new-comment-'+ res.fcid +'">' +
+                                                '   <div class="feedback-vote" style="margin-top: 0;">' +
+                                                '       <span title="0" class="glyphicon glyphicon-thumbs-up vote-up-off" style="margin-bottom: 30px;" onclick="likeOperate(\'feedback_comment\','+ res.fcid +',\'like\', this);"></span>' +
+                                                '       <span class="count" id="count-'+res.fcid+'">0</span>' +
+                                                '       <span title="0" class="glyphicon glyphicon-thumbs-down vote-down-off" onclick="likeOperate(\'feedback_comment\', '+ res.fcid +', \'unlike\', this);"></span>' +
+                                                '   </div>' +
+                                                '   <div style="margin:0 0 0 50px;clear: both;">' +
+                                                '       <a href="/ucenter/'+ res.uid +'" style="float: left;">' +
+                                                '           <img class="avatar-30" src="'+ res.avatar +'" alt="">' +
+                                                '       </a>' +
+                                                '       <a href="/ucenter/'+ res.uid +'" class="ml10 f12">'+ res.user_name +'</a>' +
+                                                '           <span class="ml10 text-muted f12">' +
+                                                                res.create_time +' 回答' +
+                                                '           </span>' +
+                                                '       <div class="fmt mt20">' +
+                                                '           <p>'+ res.comment +'</p>' +
+                                                '       </div>' +
+                                                '       <ul class="list-inline" style="float:right;">' +
+                                                '           <li><a href="javascript:void(0);" onclick="showReply('+ res.fcid +', this);">评论</a></li>' +
+                                                '           <li><a href="javascript:void(0);" onclick="showComments('+ res.fcid +');">查看(0)</a></li>' +
+                                                '           <li><a href="javascript:void(0);" class="comments" onclick="accuseOperate('+ res.fcid + ', \'show\');">举报</a></li>' +
+                                                '       </ul>' +
+                                                '       <!-- begin reply-->'+
+                                                '       <div class="clearfix quick-reply-comments" style="display: none;" id="reply-form-'+ res.fcid +'">' +
+                                                '           <form class="col-md-10 col-xs-12">' +
+                                                '               <div class="form-group mb5 mt5">' +
+                                                '                   <textarea name="text" class="form-control" placeholder="添加评论" style="overflow: hidden; word-wrap: break-word; height: 28px;"></textarea>' +
+                                                '               </div>' +
+                                                '           </form>' +
+                                                '           <div class="col-md-2 col-xs-12 mt5">' +
+                                                '               <button type="submit" class="btn btn-primary btn-sm btn-block">提交评论' +
+                                                '               </button>' +
+                                                '           </div>' +
+                                                '       </div>' +
+                                                '       <!-- end reply-->'
+                                                '       <br/>' +
+                                                '   </div>' +
+                                                '</article>';
+                            $('#show_comments').append(comment_html);
+                            $('#comment-total').html(parseInt($('#comment-total').html())+1);
+                            //跳转到新增评论上
+                            scrollTo('new-comment-'+ res.fcid, -100);
+                            //刷新验证码
+                            flushCaptcha('#captcha_img');
+                        }
+                        //判断验证码是否还需要
+                        if( data.is_need_captcha!=1 ){
+                            $('#feedback-comment-form-captcha').css('display', 'none');
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        $('#submit-comment').html(errorThrown);
+                    }
+                });
+            } else {
+                var str = '';
+                $.each(errors, function(i,val){
+                    str += val.error+',';
+                });
+                str = str.substring(0, str.length-1);
+                $('#submit-comment').css('color', 'red');
+                $('#submit-comment').html(str);
+            }
+         },
+        {showMsg: true}
+    );
+}
+</script>
+{% end %}

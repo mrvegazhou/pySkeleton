@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>{{escape(context.title)}}</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/js/bootstrap/css/bootstrap.css" type="text/css"/>
+    <link href="/static/css/common.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/css/tools.css" type="text/css"/>
+    <link rel="stylesheet" href="/static/css/font-awesome.css" type="text/css"/>
+    {% block css_content %}
+    {% end %}
+    <script src="/static/js/jquery-3.0.0.js"></script>
+    <script src="/static/js/tools.js"></script>
+    <script src="/static/js/bootstrap/js/bootstrap.js"></script>
+    {% block js_head_content %}
+    {% end %}
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="/static/js/html5shiv.min.js"></script>
+      <script src="/static/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    {% include header.html %}
+    {% block container %}<!-- /container -->
+    <div class="container" style="width: 1050px;">
+    {% block content %}
+    {% end %}
+    </div>
+    {% end %}<!-- /container -->
+    {% include footer.html %}
+  </body>
+</html>
+{% block js_content %}
+{% end %}

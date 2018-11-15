@@ -1,0 +1,63 @@
+{% extends ../base.html %}
+{% block js_head_content %}
+{% end %}
+
+{% block content %}
+<div class="row mt30">
+    <div class="col-md-9">
+        <div class="media">
+            <div class="media-body">
+                <h1 class="media-heading h3"><a href="#">社区建设</a></h1>
+                <div class="description">
+                    <p>欢迎来到 SegmentFault 0x 社区建设。这里可以讨论有关 SegmentFault 的一切，帮助我们改进产品、完善社区制度、汇报 BUG、探讨 SegmentFault 的发展等等，共同建立一个属于我们的社区。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <p class="mt5">有什么问题需要工程师们帮助呢？</p>
+        <a href="/feedback/publish" class="btn btn-primary pl50 pr50">我要提问</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-9">
+       <div class="tabbable">
+            <ul class="nav nav-tabs">
+                <li {% if context.sort_type=='rank_sort' or (context.sort_type not in['rank_sort','create_time','views']) %}class="active"{% end %}><a href="/feedback?sort=rank_sort{{ context.args_url }}#hot">最热</a></li>
+                <li {% if context.sort_type=='create_time' %}class="active"{% end %}><a href="/feedback?sort=create_time{{ context.args_url }}#new">最新</a></li>
+                <li {% if context.sort_type=='views' %}class="active"{% end %}><a href="/feedback?sort=views{{ context.args_url }}#unanswered">未回答</a></li>
+                <li style="float:right;">
+                    <form class="form-inline" action="{{ context.form_url }}" method="get">
+                      <div class="form-group">
+                        <input type="text" class="form-control" style="width:250px" id="search-feedback" name="keyword" placeholder="关键词" value="{{ context.keyword }}">
+                      </div>
+                      <button type="submit" class="btn btn-default">查询</button>
+                    </form>
+                </li>
+            </ul>
+            <div class="clearFloat"></div>
+            <div class="tab-content">
+                <div class="tab-pane {% if context.sort_type=='rank_sort' or (context.sort_type not in['rank_sort','create_time','views']) %}active{% end %}" id="hot">
+                    {% include './feedback_list.html' %}
+                </div>
+                <div id="new" class="tab-pane {% if context.sort_type=='create_time' %}active{% end %}">
+                    {% include './feedback_list.html' %}
+                </div>
+                <div id="unanswered" class="tab-pane {% if context.sort_type=='views' %}active{% end %}">
+                    {% include './feedback_list.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% end %}
+
+{% block js_content %}
+<script>
+$(function () {
+  $('#myTab li:eq(1) a').tab('show');
+});
+
+toTopAnchor();
+</script>
+{% end %}

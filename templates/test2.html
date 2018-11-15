@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html{width: 100%;height: 100%;margin:0;font-family:"微软雅黑";font-size:14px;}
+		#l-map{height:300px;width:100%;}
+		#r-result{width:100%;}
+	</style>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=DF0d2c938ce2f578eb317fc45a8342b3"></script>
+	<title>关键字输入提示词条</title>
+</head>
+<body>
+	<div id="l-map"></div>
+	<div id="r-result">请输入:<input type="text" id="suggestId" size="20" value="百度" style="width:150px;" /></div>
+	<div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
+</body>
+</html>
+<script type="text/javascript">
+	var temp_input_val = '哦去[map]北京十里河地铁站[/map]阿德[map]北京十里河地铁站[/map]ddd';
+	temp_input_val = temp_input_val.replace(/\[map\](.*?)\[\/map\]/gi, '');
+	console.log(temp_input_val);
+
+{#	temp_reg = temp_input_val.match(/\[map\](.*?)\[\/map\]/gi);#}
+{#	console.log(temp_reg.length);#}
+{#	console.log(temp_input_val.length);#}
+</script>

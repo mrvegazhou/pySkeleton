@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>登录页面</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!-- basic styles -->
+		<link href="/static/js/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="/static/admin/css/font-awesome.min.css" />
+		<!--[if IE 7]>
+		<link rel="stylesheet" href="/static/admin/font-awesome-ie7.min.css" />
+		<![endif]-->
+		<!-- page specific plugin styles -->
+		<!-- fonts -->
+		<!-- ace styles -->
+		<link rel="stylesheet" href="/static/admin/css/ace.min.css" />
+		<link rel="stylesheet" href="/static/admin/css/ace-rtl.min.css" />
+		<!--[if lte IE 8]>
+		  <link rel="stylesheet" href="/static/admin/css/ace-ie.min.css" />
+		<![endif]-->
+		<!-- inline styles related to this page -->
+		<!-- ace settings handler -->
+		<script src="/static/admin/js/ace-extra.min.js"></script>
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+        <script src="/skeleton/static/js/html5shiv.js"></script>
+        <script src="/skeleton/static/js/respond.min.js"></script>
+        <![endif]-->
+	</head>
+	<body class="login-layout">
+		<div class="main-container">
+			<div class="main-content">
+				<div class="row">
+					<div class="col-sm-10 col-sm-offset-1">
+						<div class="login-container">
+							<div class="space-6"></div>
+							<div class="position-relative">
+								{% include login_form.html %}<!-- /login-box -->
+								{% include login_forget.html %}<!-- /forgot-box -->
+								{% include login_register.html %}<!-- /signup-box -->
+							</div><!-- /position-relative -->
+						</div>
+					</div><!-- /.col -->
+				</div><!-- /.row -->
+			</div>
+		</div><!-- /.main-container -->
+{% include login_js.html %}
+</body>
+</html>

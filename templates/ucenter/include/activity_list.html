@@ -1,0 +1,21 @@
+<table class="table table-hover" id="ucenter-chk-act-list" style="margin-bottom:0px;">
+    <thead>
+        <tr>
+          <th>选择</th>
+          <th>活动名称</th>
+          <th>时间</th>
+          <th>发起人</th>
+        </tr>
+    </thead>
+    <tbody style="text-align:left;">
+        {% for item in user_activity_list %}
+        <tr>
+            <td><input type="checkbox" name="act_{{ item['activity_id'] }}" value="{{ item['activity_id'] }}"></td>
+            <td><a href="/activity-info/{{ item['activity_id'] }}">{{ item['activity_info']['name'] }}</a></td>
+            <td>从<mark>{{ item['activity_info']['create_time'] }}</mark>到<mark>{{ item['activity_info']['dead_time'] }}</mark></td>
+            <td>{{ item['activity_info']['group_leader_name'] }}</td>
+        </tr>
+        {% end %}
+    </tbody>
+</table>
+{% include '../../pager.html' %}

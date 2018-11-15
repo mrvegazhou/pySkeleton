@@ -1,0 +1,43 @@
+{% extends base.html %}
+{% block css %}
+<link rel="stylesheet" href="/static/admin/js/bootstrap-fileinput/css/fileinput.min.css" />
+{% end %}
+{% block breadcrumb %}
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">CMS管理</a>
+        </li>
+        <li class="active">文章详情</li>
+    </ul>
+{% end %}
+{% block page_header %}
+{% end %}
+{% block content %}
+<div class="row">
+    <div class="col-xs-12">
+        <input id="input-702" name="kartik-input-702" type="file" multiple=true class="file-loading"
+               data-upload-url="/site/file-upload" data-max-file-count="10" />
+    </div>
+</div>
+{% end %}
+{% block js_content %}
+<script src="/static/admin/js/bootstrap-fileinput/js/fileinput.js"></script>
+<script>
+$(document).ready(function(){
+    $("#input-702").fileinput({
+        uploadUrl: "' . Url::to(['/site/file-upload']) . '",
+        maxFileCount: 10,
+        overwriteInitial: false,
+        initialPreview: [
+            '<img src="http://www.kodyaz.com/photos/windows_8/images/34677/secondarythumb.aspx " class="file-preview-image">',
+            '<img src="http://www.kodyaz.com/photos/windows_8/images/34676/secondarythumb.aspx " class="file-preview-image">',
+        ],
+        initialPreviewConfig: [
+            {caption: "Desert.jpg", width: "120px", url:"/site/file-delete", key:1},
+            {caption: "Tulips.jpg", width: "120px", url:"/site/file-delete", key:2}
+        ]
+    });
+});
+</script>
+{% end %}

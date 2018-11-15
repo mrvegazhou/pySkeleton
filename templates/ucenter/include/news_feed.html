@@ -1,0 +1,443 @@
+<style>
+#loading-indicator {
+  	position: absolute;
+	margin:100px auto;
+}
+.divX
+{
+    z-index:100;
+	width: 100px;
+	height: 100px;
+    border-style:solid;
+    border-width:1px;
+    border-color:#DDDDDD;
+    line-height:10px;
+    text-align:center;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:10px;
+    display: block;
+}
+#filler { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+#feed-container {
+	position: relative;
+	width: 100%;
+	display:inline-block;
+	max-height: 210px;
+}
+.clear { clear: both; }
+.section {
+			display: inline-block;
+			width: 100px;
+			height: 100px;
+			margin-left: 1px;
+			opacity: .6;
+			border-radius: 6px;
+			position: relative;
+			vertical-align: top;
+			text-align: center;
+}
+.upload_img {
+	margin-bottom: 2px;
+	margin-top: 2px;
+	text-align: center;
+	border: 2px dashed #DDDDDD;
+	border-radius: 2px 2px 2px 2px;
+	margin-right: 5px;
+	margin-left: 2px;
+	display: inline-block;
+	position: relative;
+	vertical-align: top;
+	font-size: 14px;
+}
+.file_out {
+	height: 100%;
+	width: 100%;
+	z-index: 100;
+	position: relative;
+}
+.upload_img a {
+    display: block;
+    height: 100%;
+    width: 100%;
+	cursor: pointer;
+	color: #3B5998;
+}
+
+.file_upload {
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+}
+.upload_img input {
+	bottom: 0;
+    cursor: inherit;
+    font-size: 1001px !important;
+    height: 300px;
+    margin: 0;
+    opacity: 0;
+    padding: 0;
+    position: absolute;
+    right: 0;
+}
+.public-img {
+    background-color: #F2F2F2;
+    border-top: 1px solid #E6E6E6;
+    height: 23px;
+}
+.clearfix:after {
+    clear: both;
+    content: ".";
+    display: block;
+    font-size: 0;
+    height: 0;
+    line-height: 0;
+    visibility: hidden;
+}
+.lfloat {
+	float: left;
+}
+.lfloat .map-marker, .lfloat .isPublic, .lfloat .smile-marker, .lfloat .event-marker {
+	border-right: 1px solid #E0E0E0;
+    display: inline-block;
+    float: left;
+    text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+	color: #3B5998;
+	width: 25px;
+    padding: 0px 5px;
+    height: 22px;
+    line-height: 22px;
+}
+.smile-marker:hover, .map-marker:hover, .isPublic:hover, .event-marker:hover {
+    color: #FF9224;
+}
+.lfloat .isPublic {
+    width: auto;
+    font-size: 10px;
+}
+.lfloat .isPublic #public_content {
+    padding-right: 2px;
+}
+.isOpen {
+    background-color: #FAFAFA;
+    position: absolute;
+	margin: 0px;
+    width: auto;
+    border: 1px solid #E0E0E0;
+    padding: 3px 15px 3px 15px;
+    text-align: left;
+}
+.isOpen li{
+	list-style: none;
+	display: inline;
+	height: 30px;
+	white-space: nowrap;
+}
+.isOpen li a {
+    display: block;
+    cursor: pointer;
+    font-size: 12px;
+    margin-bottom: 0px;
+    color: #777;
+}
+.isOpen li a:hover {
+    display: block;
+    cursor: pointer;
+    text-decoration:none;
+    color: #337ab7;
+}
+#conBox {
+    height: 75px;
+    overflow: auto;
+    resize: none;
+    width: 100%;
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #D0D0D0;
+    color: #777777;
+    font: 14px/1.5 arial;
+}
+#msgBox form {
+    color: #999999;
+    margin-top: 5px;
+    position: relative;
+    line-height: 1px;
+    margin-bottom: 2px;
+}
+.newsFeedTextarea {
+	width: 520px;
+	display: block;
+    overflow: hidden;
+}
+.newsFeedTextarea p {
+    margin-bottom: 30px;
+}
+.newsFeedTextarea span {
+    font: 12px Helvetica,Arial,sans-serif;
+    margin-top: 0px;
+}
+#msgBox form .maxNum {
+    padding: 0 5px;
+    color: #777;
+}
+#msgBox .arrowDown {
+    margin: 0px;
+    padding-top: 0px;
+    text-align: center;
+}
+#msgBox .arrowDown a {
+    color: #777777;
+    width: 200px;
+    padding: 0 100px;
+}
+#msgBox .arrowDown a:hover {
+    cursor: pointer;
+    background-color: #ebebeb;
+    padding: 0 100px;
+}
+.line {
+    border-bottom: 1px solid #DDDDDD;
+    height: 15px;
+    margin-bottom: 20px;
+}
+.line .order {
+    background-color: #FFFFFF;
+    left: 447px;
+    top: 3px;
+    padding: 2px 3px;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+.line .order a, .line .order a:hover {
+    display: block;
+    cursor: pointer;
+    text-decoration:none;
+    font-size: 12px;
+}
+.feed-list {
+    margin-top: 0px;
+	list-style-type: none;
+    font-family: 'Helvetica','STHeiti';
+    letter-spacing: normal;
+    word-spacing: normal;
+}
+.feed-list li {
+	margin-top: 26px;
+    line-height: 17px;
+    padding: 3px;
+}
+.feed-list li:hover {
+    background-color: #f2f2f5;
+}
+.feed-list li:first-child {
+    margin-top: 0px;
+}
+.feed-list p {
+    color: #424242;
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+.feed-list .feed-list-img img {
+    max-width: 515px;
+}
+.feed-list .face-img {
+    display:inline;
+}
+.feed-list .feed-content {
+}
+.feed-list a:hover {
+    text-decoration:none;
+}
+.feed-list span.time-from, .feed-list .del, .feed-list .is-open {
+    display: block;
+    color: #aaa;
+    font: 12px Helvetica,Arial,sans-serif;
+}
+.feed-list .time-from {
+    float: left;
+}
+.feed-list .is-open {
+    float: left;
+    margin-left: 10px;
+}
+.feed-list div {
+    display: inline-block;
+    width: 100%;
+}
+.feed-list .feed-content {
+}
+.feed-list .del {
+    float: right;
+    display: none;
+    margin-right: 5px;
+}
+.newsFeedTitle {
+    font: 13px Helvetica,Arial,sans-serif;
+    color: #999999;
+    border-bottom: 2px solid #96D0F0;
+    width: 40px;
+}
+.publicPhoto {
+	border-top: medium none;
+    padding: 0;
+	text-align: left;
+    border: 1px solid #D0D0D0;
+    border-top: none;
+}
+.publicPhoto .ScrollableArea {
+	overflow: hidden;
+    position: relative;
+    width: 100%;
+    display: none;
+}
+.show-more-items {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: #f8f9fe;
+    line-height: 12px;
+    color: #808080;
+    font-size: 12px;
+    text-align: center;
+    padding: 5px 0;
+}
+.upload-feed-img {
+    height: 2px;
+    margin-bottom: 0px;
+}
+#ucenter-map-marker-content {height:300px;width:100%;}
+.map-input-cls {
+    float:left;
+    widht: 300px;
+    margin: 5px;
+}
+.anchorBL{display:none;}
+</style>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=DF0d2c938ce2f578eb317fc45a8342b3"></script>
+<script>
+    var city = "{{ context.city }}";
+    var faceimgs = '{% raw context.faceimgs %}';
+</script>
+<div style="height:auto; float:left; min-width: 520px; width: 66%;">
+    <div class="newsFeedTitle">
+        发状态
+    </div>
+    <div class="box_1" id="msgBox">
+        <form  id="public-newsfeed-form" enctype="multipart/form-data" method="POST" action="/ucenter/public">
+            <input type="hidden" value="" name="newsfeed_img_urls"/>
+            <input type="hidden" value="1" name="isopen"/>
+            <input type="hidden" value="" name="newsfeed_activity_ids"/>
+            {% module xsrf_form_html() %}
+
+            <div>
+                <textarea id="conBox" name="content"></textarea>
+            </div>
+            <div class="publicPhoto">
+                <div class="ScrollableArea">
+                    <div id="filler"></div>
+                    <div id="feed-container" file-counter="0">
+                        <!-- 上传按钮 -->
+                        <div class="upload_img" style="width: 96px; height: 96px; line-height: 96px;">
+                            <div style="width: 96px; height: 96px;">
+                                <div id="u_a_5" class="file_out">
+                                    <a id="u_a_6" class="_3jt" rel="ignore">
+                                        <i class='fa fa-plus'></i>
+                                        <div class="file_upload">
+                                            <input id="feed_img" type="file" name="files[]" />
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+                <div class="public-img">
+                    <div class="clearfix">
+                        <div class="lfloat">
+                            <div class="lfloat">
+                                <a href="javascript:;" class="smile-marker face" title="表情"><i class="fa fa-smile-o"></i></a>
+                            </div>
+                            <div class="lfloat">
+                                <a href="javascript:;" class="map-marker" title="地图"><i class="fa fa-map-marker"></i></a>
+                            </div>
+                            <div class="lfloat">
+                                <a href="javascript:;" class="event-marker" title="散布活动"><i class="fa fa-bars"></i></a>
+                            </div>
+                            <div class="lfloat">
+                                <a href="javascript:;" onclick="showDiv(this);" class="isPublic" title="查看权限"><span id="public_content">公开</span><i class="fa fa-angle-down"></i></a>
+                                <div class="clear"></div>
+                                <ul style="display: none;" class="isOpen">
+                                    <li><a href="javascript:;" onclick="isOpenNewsfeed(1);">公开</a></li>
+                                    <li><a href="javascript:;" onclick="isOpenNewsfeed(2);">仅自己</a></li>
+                                    <li><a href="javascript:;" onclick="isOpenNewsfeed(3);">朋友</a></li>
+                                    <li><a href="javascript:;" onclick="isOpenNewsfeed(4);">群组</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrowDown"><a href="javascript:;" onclick="showPhotoView(this);"><i class="fa fa-angle-double-down"></i></a></div>
+
+            <div class="newsFeedTextarea">
+                <p>
+                    <span>还能输入<strong class="maxNum">140</strong>个字</span>
+                    <a href="javascript:;" class="btn btn-default btn-sm" style="float:right;" onclick="publicNewsFeedSubmit();">发布</a>
+                </p>
+            </div>
+        </form>
+    </div>
+
+    <div style="clear:both;"></div>
+
+    <div class="line">
+        <div class='order'>
+            <a href="javascript:;" onclick="showDiv(this);" style="display: block;cursor: pointer;">排序<i class='fa fa-angle-down'></i></a>
+            <ul style="display: none;" class="isOpen">
+                <li><a href="javascript:;" onclick="sortList('time');">时间</a></li>
+                <li><a href="javascript:;" onclick="sortList('hot');">热度</a></li>
+            </ul>
+        </div>
+    </div>
+    <ul class="feed-list">
+        {% for item in context.newsfeed_list %}
+        <li id="feed-item-{{ item['id'] }}">
+            <p class="feed-content">
+                <span class="feed-content">{% raw item['content'] %}</span>
+                {% if item['img_urls'] %}
+                <div class="feed-list-img">
+                {% for img in item['img_urls'] %}
+                <a class="imgZoom" href="javascript:;" data-href="/ucenter/feedimg/{{ img['url'] }}"
+                   {% if img['ext_info']!=0 %}
+                   data-width="{{ img['ext_info']['width'] }}"
+                   data-height="{{ img['ext_info']['height'] }}
+                   {% end %}
+                   ">
+                    <img src="/ucenter/feedimg/{{ img['url'] }}" style="max-width:150px; max-height:100px;"/>
+                </a>
+                {% end %}
+                </div>
+                {% end %}
+            </p>
+            <div>
+                <span class="time-from">{{ item['create_time'] }}来自 {{ item['from_source'] }}</span>
+                <span class="is-open">{{ item['is_open'] }}可见</span>
+                <span><a href="javascript:;" onclick="delNewsFeedItem({{ item['id'] }});" class="del">删除</a></span>
+            </div>
+        </li>
+        {% end %}
+    </ul>
+    <div class="show-more-items">
+        <a href="javascript:;" style="color:#337ab7;" onClick="getMoreList();">查看更多(第<span id="more-page">1</span>页)</a>
+    </div>
+    <div style="clear:both;"></div>
+</div>
+
+<script src="/static/js/extend/face.js"></script>
+<script src="/ucenter/js/ucenter.js"></script>

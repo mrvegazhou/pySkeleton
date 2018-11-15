@@ -1,0 +1,287 @@
+{% extends ../base.html %}
+{% block content %}
+<div id="msg">
+    {% if context.has_key('error') and context.error %}
+    <div class="alert alert-danger show_msg" role="alert" id="warning-block">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>提示！</strong> <span>{{context.error}}</span>
+    </div>
+    {% end %}
+</div>
+<div class="row">
+    <div class="col-md-12" style="text-align:center;margin:50px 0 0 0;">
+		<div class="step">
+			<div class="nux-step-line" style="width:80%"></div>
+			<div id="" class="step1" style="width:20%;display: inline-block;float: left;">
+				<div class="nux-step-wrapper">
+					<div class="past-number">1</div>
+					<h2 class="past-curr-text">验证邮箱</h2>
+				</div>
+			</div>
+			<div class="step1" style="width:20%;display: inline-block;float: left;">
+				<div class="nux-step-wrapper curr">
+					<div class="past-number">2</div>
+					<h2 class="past-curr-text">选择人格特点</h2>
+				</div>
+			</div>
+			<div class="single-step" style="width:20%;display: inline-block;float: left;">
+				<div class="nux-step-wrapper">
+					<div class="number">3</div>
+					<h2 class="curr-text">选择活动/朋友</h2>
+				</div>
+			</div>
+		</div>
+        <div class="clearfix"></div>
+		<div class="continue" style="margin-top: 25px;">
+
+            <!-- 性格测试结果 -->
+            {% if context.radar %}
+            <div class="row">
+                <div class="col-md-6">
+                    <figure>{% raw context.radar %}</figure>
+                </div>
+                <div class="col-md-6" style="text-align:left;">
+                    <p>{{context.N_msg}}</p>
+                    <p>{{context.O_msg}}</p>
+                    <p>{{context.A_msg}}</p>
+                    <p>{{context.E_msg}}</p>
+                    <p>{{context.C_msg}}</p>
+                </div>
+            </div>
+            {% end %}
+            <!-- end -->
+
+            <form style="margin-bottom: 5px;text-align:center;width: 420px;" class="search_form">
+                <div class="input-group" style="width: 350px;float: left;">
+                    <input type="text" class="form-control" id="baidu">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                        </ul>
+                    </div>
+                    <!-- /btn-group -->
+                </div>
+                <div style="float:left;margin-left:10px;"><button type="submit" class="btn btn-default">搜索</button></div>
+                <div style="clear: both"></div>
+            </form>
+            <form action="/character" method="post">
+                <!-- 推荐的活动和组 -->
+                <div class="row thumbnails">
+                    <div class="rec-friends"><strong>活动推荐</strong></div>
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="thumbnail activity-card" onclick="chooseActivity(this, 'activity');" date-id="1">
+                            <img src="http://static.bootcss.com/expo/img/7/b5/f9c2f01fad1f23574156e0577a06c.jpg" alt="Ghost中国">
+                            <div class="mask">ddddddfffff</div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="thumbnail activity-card" onclick="chooseActivity(this, 'activity');" data-id="2">
+                            <img src="http://static.bootcss.com/expo/img/7/b5/f9c2f01fad1f23574156e0577a06c.jpg" alt="Ghost中国">
+                            <div class="mask">ddddddfffff</div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="thumbnail activity-card" onclick="chooseActivity(this, 'activity');" data-id="3">
+                            <img src="http://static.bootcss.com/expo/img/9/77/9aa20712a7dba02b00e73db495950.png" alt="Gulp中文网">
+                            <div class="mask">ddddddfffff</div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="thumbnail activity-card" onclick="chooseActivity(this, 'activity');" data-id="4">
+                            <img src="http://static.bootcss.com/expo/img/9/77/9aa20712a7dba02b00e73db495950.png" alt="Gulp中文网">
+                            <div class="mask">ddddddfffff</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end -->
+                <!-- 推荐群或圈子 -->
+                <div class="row groups">
+                    <div class="rec-friends"><strong>社团</strong></div>
+                    <div class="col-xs-6 col-sm-2">
+                        <div class="group-item" onclick="chooseActivity(this, 'groups');"  data-id="1">
+                            <div class="pic">
+                                <a href="#" target="_blank">
+                                    <img alt="Tomorrow-coffee" src="http://static.bootcss.com/expo/img/9/77/9aa20712a7dba02b00e73db495950.png" />
+                                </a>
+                            </div>
+                            <div class="content">
+                                <div class="title">
+                                    <a href="#">卧槽</a>
+                                </div>
+                                <span class="lnk-follow">
+                                    <input type="checkbox">关注
+                                </span>
+                            </div>
+                            <div class="follow">
+                                <p>Tomorrow is another day。 “明天”...</p>
+                                <div class="favs">174 人关注</div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="col-xs-6 col-sm-2">
+                        <div class="group-item" onclick="chooseActivity(this, 'groups');" data-id="2">
+                            <div class="pic">
+                                <a href="#" target="_blank">
+                                    <img alt="Tomorrow-coffee" src="http://static.bootcss.com/expo/img/9/77/9aa20712a7dba02b00e73db495950.png" />
+                                </a>
+                            </div>
+                            <div class="content">
+                                <div class="title">
+                                    <a href="#">卧槽</a>
+                                </div>
+                                <span class="lnk-follow">
+                                    <input type="checkbox">关注
+                                </span>
+                            </div>
+                            <div class="follow">
+                                <p>Tomorrow is another day。 “明天”...</p>
+                                <div class="favs">174 人关注</div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <!-- end -->
+                <!-- 推荐好友 -->
+                <div class="row" style="margin: 2px;">
+                    <div class="rec-friends"><strong>好友推荐</strong></div>
+                    <div class="rec-box">
+                        <div class="rec-block">
+                            <div class="rec-block-content" onclick="chooseActivity(this, 'friend');" data-id="1">
+                                <div class="rec-block-img">
+                                    <img src="http://static.bootcss.com/expo/img/7/b5/f9c2f01fad1f23574156e0577a06c.jpg" width="75px" height="75px" />
+                                </div>
+                                <div class="tip tip-w rec-block-tip">
+                                    <div class="form-tip-arrow" style="border-color: transparent #337AB7;"></div>
+                                    <div class="form-tip-inner" style="border: 1px solid #337AB7;background-color: white;text-align:left;">
+                                        fuckddddddddd you hahaha
+                                        <label class="checkbox" style="margin-top:5px;"><input type="checkbox" style="position:relative;margin-left:0px;">关注Ta</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rec-block">
+                            <div class="rec-block-content" onclick="chooseActivity(this, 'friend');" data-id="2">
+                                <div class="rec-block-img">
+                                    <img src="http://static.bootcss.com/expo/img/7/b5/f9c2f01fad1f23574156e0577a06c.jpg" width="75px" height="75px" />
+                                </div>
+                                <div class="tip tip-w rec-block-tip">
+                                    <div class="form-tip-arrow" style="border-color: transparent #337AB7;"></div>
+                                    <div class="form-tip-inner" style="border: 1px solid #337AB7;background-color: white;text-align:left;">
+                                        fuckddddddddd you hahaha
+                                        <label class="checkbox" style="margin-top:5px;"><input type="checkbox" style="position:relative;margin-left:0px;">关注Ta</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- end -->
+                <br/><br/><br/>
+                <div>
+                    {% module xsrf_form_html() %}
+                    <input name="rec_friends" type="hidden" value="" />
+                    <input name="rec_activities" type="hidden" value="" />
+                    <input name="rec_groups" type="hidden" value="" />
+                    <button type="button" class="btn btn-primary btn-sm" onclick="submitTest();">保存&nbsp;<span class="glyphicon glyphicon-arrow-right"></span></button>
+                    <a href="/reg/?step=end" style="margin-left: 15px;">跳过</a>
+                    <input type="hidden" value="end" name="next_step">
+                </div>
+            </form>
+		</div>
+	</div>
+</div>
+
+{% end %}
+{% block js_content %}
+<script>
+function chooseActivity(obj, type) {
+    var str = '';
+    var id = $(obj).attr("data-id");
+    if(typeof id=='undefined' || id=='') {
+        return;
+    }
+    switch(type)
+    {
+        case 'friend':
+            if( -1!==$.inArray($(event.target).parent().attr('class').toUpperCase(), ['CHECKBOX', 'FORM-TIP-ARROW', 'TIP TIP-W REC-BLOCK-TIP', 'FORM-TIP-INNER']) ){
+                event.stopPropagation();
+                return;
+            }
+            str = '申请好友';
+            break;
+        case 'activity':
+            str = '申请加入';
+            break;
+        case 'groups':
+            if( $(event.target).attr("type")==='checkbox' || (typeof $(event.target).attr('class') != 'undefined' && $(event.target).attr('class').toUpperCase()=='LNK-FOLLOW') ){
+                event.stopPropagation();
+                return;
+            }
+            str = '申请加入';
+            break;
+    }
+    var content = '<div id="choose-'+type+'-'+id+'"><span class="glyphicon glyphicon-ok" aria-hidden="true" style="margin-bottom:0px;padding:0px;font-size:12px;">'+str+'</span></div>';
+    var btn_ok = $('#choose-'+type+'-'+id);
+    var object_vals = null;
+    switch(type)
+    {
+        case 'friend':
+            object_vals = $('input[name="rec_friends"]');
+            break;
+        case 'activity':
+            object_vals = $('input[name="rec_activities"]');
+            break;
+        case 'groups':
+            object_vals = $('input[name="rec_groups"]');
+            break;
+    }
+    if( typeof object_vals=='undefined' )
+    {
+        return;
+    }
+    if( btn_ok.length>0 )
+    {
+        ids = object_vals.val();
+        ids_arr = ids.split(",");
+        id_index = $.inArray(id, ids_arr);
+        if(id_index!=-1) {
+            ids_arr.splice(id_index, 1);
+        }
+        object_vals.val(ids_arr.join());
+        $('#choose-'+type+'-'+id).remove();
+    }
+    else
+    {
+        $(obj).after(content);
+        object_vals.val(object_vals.val()+','+id);
+    }
+}
+
+$('.rec-block-content').hover(function(){
+    $(this).find('.rec-block-tip').show();
+},function(){
+    $(this).find('.rec-block-tip').hide();
+});
+var selectObj = $("#baidu").on("onSetSelectValue", function (event, result) {
+    alert(2);
+    }).selectSearch(
+        {   allowNoKeyword: false,
+            multiWord: true,
+            separator: ",",
+            url: '{{ context.domain_name }}/test?wd=',
+            indexId: 1,
+            indexKey: 0,
+            idField: 'id',
+            keyField: 'word',
+            initData: {'value': [{"word": "1234", 'id': 6}, {"word": "890", 'id':5}]},
+        }
+)
+</script>
+{% end %}

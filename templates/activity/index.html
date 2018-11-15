@@ -1,0 +1,112 @@
+{% extends ../base.html %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="article-list">
+            <div class="col-md-12">
+                <div class="alert alert-info show_msg" style="width: 50%; float:left;display: inline;">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>提示！</strong> <span>您有未读的信息</span>
+                </div>
+            </div>
+
+            <div class="article-list">
+                <div class="article-item-list block-left" style="margin-top:10px;">
+                    <dl style="margin-top:5px">
+                        <dd class="article-items">
+
+                        {% for item in context.activity_list %}
+                            {% if item.icon_width<300 %}
+                            <div class="item">
+                                <a href="#" target="_blank"><img src="/uploads/{{ item.icon }}"></a>
+                                <div>
+                                    <a href="#" target="_blank" class="item-title">{{ item.name }}</a>
+                                    <p>
+                                      {{ item.content }}
+                                    </p>
+                                    <div style="margin-top:20px;margin-bottom: 0px;height: 20px; line-height: 20px;margin-left:0px;">
+                                        <span>{{ item.create_time }}  &nbsp;&nbsp;&nbsp;来自:&nbsp;<a href="#">{{ item.from_group_name }}</a></span>
+                                        <div class="item-post">
+                                            <ul class="list-inline">
+                                                <li><a href="#">编辑</a></li>
+                                                <li><a href="#">评论</a></li>
+                                                <li>
+                                                    <span class="dropdown" style="">
+                                                      <a href="javascript:;" class="dropdown-toggle"  id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                        更多
+                                                        <span class="caret"></span>
+                                                      </a>
+                                                      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                        <li><a href="#">举报</a></li>
+                                                      </ul>
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item-bottom"></div>
+                            </div>
+                            {% elif not item.icon_width %}
+                            <div class="item noimg">
+                                <div>
+                                    <a href="#" target="_blank"  class="item-title">{{ item.name }}</a>
+                                    <p>
+                                      {{ item.content }}
+                                    </p>
+                                    <span>{{ item.create_time }}  &nbsp;&nbsp;&nbsp;来自:&nbsp;<a href="#">{{ item.from_group_name }}</a></span>
+                                </div>
+                                <div style="margin: 30px 0;border-bottom: 1px #F2F2F0 solid; width: 100%;"></div>
+                            </div>
+                            {% else %}
+                            <div class="item right-img">
+                                <div>
+                                    <a href="#" target="_blank"  class="item-title">{{ item.name }}</a>
+                                    <p>
+                                      {{ item.content }}
+                                    </p>
+                                    <span>{{ item.create_time }}  &nbsp;&nbsp;&nbsp;来自:&nbsp;<a href="#">{{ item.from_group_name }}</a></span>
+                                </div>
+                                <a href="#" target="_blank">
+                                    <img src="/uploads/{{ item.icon }}">
+                                </a>
+                            </div>
+                            {% end %}
+                        {% end %}
+
+                        </dd>
+                    </dl>
+
+                    <div class="item-pager">
+                        {% include '../pager.html' %}
+                    </div>
+                </div>
+                <div class="block-right">
+                    <dl class="nl" style="width:auto;list-style: none;">
+                        <dt>频道推荐</dt>
+                        <dd>
+                            <div class="f">
+                                <img src="http://upload.mnw.cn/2015/0924/thumb_120_70_1443087074499.jpg">
+                                <p><a target="_blank" href="http://www.mnw.cn/news/shehui/996626.html">东北最美高铁国庆前通车一站一景最全攻略</a>
+                                    <br>2015-09-24</p>
+                            </div>
+                            <div class="l">
+                             <a target="_blank" href="http://www.mnw.cn/news/shehui/996626.html">山东兰陵县18岁女孩遭父亲性侵4年流产 警方</a><br>
+                             <a target="_blank" href="http://www.mnw.cn/news/shehui/996604.html">湖南学校附近现裸体广告现场图片 孩子紧盯</a><br>
+                             <a target="_blank" href="http://www.mnw.cn/news/china/996603.html">外交部证实习近平10月将访问英国（图）</a><br>
+                             <a target="_blank" href="http://www.mnw.cn/news/shehui/996596.html">湖北一女子20年咳嗽不止 原是小时候误吞笔</a><br>
+                             <a target="_blank" href="http://www.mnw.cn/news/world/996595.html">联合国：乌克兰危机爆发以来已有逾8000人丧</a><br>
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% module Chat() %}
+{% end %}
+{% block js_content %}
+<script>
+</script>
+{% end %}

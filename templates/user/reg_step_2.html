@@ -1,0 +1,111 @@
+{% extends ../base.html %}
+{% block content %}
+<div id="msg">
+    {% if context.has_key('error') and context.error %}
+    <div class="alert alert-danger show_msg" role="alert" id="warning-block">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>提示！</strong> <span>{{context.error}}</span>
+    </div>
+    {% end %}
+</div>
+<div class="row">
+    <div class="col-md-12" style="text-align:center;margin:50px 0 0 0;">
+		<div class="step">
+			<div class="nux-step-line" style="width:80%"></div>
+			<div id="" class="step1" style="width:20%;display: inline-block;float: left;">
+				<div class="nux-step-wrapper">
+					<div class="past-number">1</div>
+					<h2 class="past-curr-text">验证邮箱</h2>
+				</div>
+			</div>
+			<div class="step1" style="width:20%;display: inline-block;float: left;">
+				<div class="nux-step-wrapper curr">
+					<div class="number">2</div>
+					<h2 class="curr-text">选择人格特点</h2>
+				</div>
+			</div>
+			<div class="single-step hidden" style="width:33%;display: inline-block;">
+				<div class="nux-step-wrapper">
+					<div class="number">3</div>
+					<h2 class="curr-text">选择朋友</h2>
+				</div>
+			</div>
+		</div>
+        <div class="clearfix"></div>
+		<div class="continue">
+			<div class="section"  style="width: 90%;margin-left: auto;margin-right: auto;">
+                <p class="text-muted">请注意这个不是测智商，所以分数高或者低并不意味着好或者不好<br/>
+                    （说明：在以下的每个数字号表中，指出你一般最想描述的点。假使态度中等，就将记号打在中点3上）</p>
+                {%set list=context.list%}
+                <form action="/character" style="width: 90%;" method="post" id="character_form">
+				<table class="table table-hover" >
+                    <tbody>
+                    {% for item in list[0:15] %}
+                        <tr>
+                            <td>{{item['id']}}</td>
+                            <td align="right">{{item['p_name']}}</td>
+                            <td>
+                              <label style="margin-right: 20px;"><input type="radio" name="bfi_{{item['id']}}" id="bfi_{{item['id']}}_5" value="5"> 5 </label>
+                              <label style="margin-right: 20px;"><input type="radio" name="bfi_{{item['id']}}" id="bfi_{{item['id']}}_4" value="4"> 4 </label>
+                              <label style="margin-right: 20px;"><input type="radio" name="bfi_{{item['id']}}" id="bfi_{{item['id']}}_3" value="3"> 3 </label>
+                              <label style="margin-right: 20px;"><input type="radio" name="bfi_{{item['id']}}" id="bfi_{{item['id']}}_2" value="2"> 2 </label>
+                              <label style="margin-right: 20px;"><input type="radio" name="bfi_{{item['id']}}" id="bfi_{{item['id']}}_1" value="1"> 1 </label>
+                            </td>
+                            <td align="left">{{item['n_name']}}</td>
+                        </tr>
+                    {% end %}
+                        <tr class="info">
+                            <td colspan="4"><a href="javascript:;" onclick="showLast();">还差一点<span class="glyphicon glyphicon-chevron-down"></span></a></td>
+                        </tr>
+                    {% for item in list[15:] %}
+                        <tr class="hidden" id="last_{{item['id']}}">
+                            <td>{{item['id']}}</td>
+                            <td align="right">{{item['p_name']}}</td>
+                            <td>
+                              <label style="margin-right: 20px;"><input type="radio" name="bfi_{{item['id']}}" id="bfi_{{item['id']}}_5" value="5"> 5 </label>
+                              <label style="margin-right: 20px;"><input type="radio" name="bfi_{{item['id']}}" id="bfi_{{item['id']}}_4" value="4"> 4 </label>
+                              <label style="margin-right: 20px;"><input type="radio" name="bfi_{{item['id']}}" id="bfi_{{item['id']}}_3" value="3"> 3 </label>
+                              <label style="margin-right: 20px;"><input type="radio" name="bfi_{{item['id']}}" id="bfi_{{item['id']}}_2" value="2"> 2 </label>
+                              <label style="margin-right: 20px;"><input type="radio" name="bfi_{{item['id']}}" id="bfi_{{item['id']}}_1" value="1"> 1 </label>
+                            </td>
+                            <td align="left">{{item['n_name']}}</td>
+                        </tr>
+                    {% end %}
+                    </tbody>
+                </table>
+                {% module xsrf_form_html() %}
+                <button type="button" class="btn btn-primary btn-sm" onclick="submitTest();">保存&nbsp;<span class="glyphicon glyphicon-arrow-right"></span></button>
+                <a href="/reg/?step=3" style="margin-left: 15px;">跳过</a>
+                </form>
+			</div>
+		</div>
+	</div>
+</div>
+{% end %}
+{% block js_content %}
+<script>
+function showLast(){
+    $("tr[id^='last_']").removeClass('hidden');
+    $("tr[class='info']").hide();
+}
+function submitTest(){
+    var ids = "{{context.ids}}";
+    var arr = ids.split(',');
+    var msg = '';
+    $.each(arr, function(n, v) {
+        var name_txt = 'bfi_'+v;
+        if(typeof $("input[name='"+name_txt+"']:checked").val()=='undefined'){
+            msg = '请在第'+v+'行选择您的性格特点';
+            return false;
+        }
+    });
+    if(msg!=''){
+        var opts = { 'title':'提示：', 'content': msg, 'btn_ok_text':'', 'btn_cancel_text':'', 'width':'250px'};
+        var d = new Dialog(opts);
+        d.init();
+    } else{
+        $('#character_form').submit();
+    }
+}
+</script>
+{% end %}

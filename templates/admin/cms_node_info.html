@@ -1,0 +1,360 @@
+{% extends base.html %}
+{% block css %}
+<link rel="stylesheet" href="/static/admin/css/bootstrap-tagsinput.css" />
+<link rel="stylesheet" href="/static/admin/css/jquery.autocomplete.css" />
+<link rel="stylesheet" href="/static/admin/css/datepicker.css" />
+<link rel="stylesheet" href="/static/admin/js/jquery-file-upload/css/jquery.fileupload.css" />
+{% end %}
+{% block breadcrumb %}
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">CMS管理</a>
+        </li>
+        <li class="active">文章详情</li>
+    </ul>
+{% end %}
+{% block page_header %}
+{% end %}
+{% block content %}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="alert alert-danger hide" id="form-error"></div>
+        <form class="form-horizontal" role="form" method="post" id="admin_cms_form">
+            <div class="form-group">
+                <label class="col-sm-1 control-label no-padding-right" for="node_name">文章标题</label>
+                <div class="col-sm-9">
+                    <input type="text" id="node_name" name="node_name" placeholder="文章标题" class="col-xs-10 col-sm-5" value="{% if context.info.has_key('page_title') %}{{context.info['page_title']}}{%end%}"/>
+                </div>
+            </div>
+            <div class="space-4"></div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label no-padding-right" for="node_tag_name">搜索文章Tag</label>
+                <div class="col-sm-9">
+                    <input type="text" id="node_tag_name" name="node_tag_name" placeholder="Tag" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>
+            <div class="space-4"></div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label no-padding-right" for="tag_ids">所选标签</label>
+                <div class="col-sm-9">
+                    <input type="text" name="tag_ids" id="tag_ids" value="" />
+                </div>
+            </div>
+            <div class="space-4"></div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label no-padding-right" for="node_status">状态</label>
+                <div class="col-sm-9">
+                    <select id="node_status" name="node_status" class="col-xs-5 col-sm-3">
+                        <option value="1" {% if context.info.has_key('status') and context.info['status']==1 %}selected="selected"{%end%}>正常</option>
+                        <option value="0" {% if context.info.has_key('status') and context.info['status']==0 %}selected="selected"{%end%}>禁止</option>
+                    </select>
+                </div>
+            </div>
+            <div class="space-4"></div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label no-padding-right" for="node_publish_time">发布时间</label>
+                <div class="col-xs-5 col-sm-3">
+                    <div class="input-group">
+                        <input class="form-control date-picker" name="node_publish_time" id="node_publish_time" type="text" data-date-format="dd-mm-yyyy" value="{% if context.info.has_key('publish_time') %}{{context.info['publish_time']}}{%end%}"/>
+                        <span class="input-group-addon">
+                            <i class="icon-calendar bigger-110"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="space-4"></div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label no-padding-right" for="page_title">页面标题</label>
+                <div class="col-sm-9">
+                    <input type="text" id="page_title" name="page_title" placeholder="页面标题" class="col-xs-10 col-sm-5"
+                            value="{% if context.info.has_key('page_title') %}{{context.info['page_title']}}{%end%}"
+                    />
+                </div>
+            </div>
+            <div class="space-4"></div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label no-padding-right" for="meta_title">META标题</label>
+                <div class="col-sm-9">
+                    <input type="text" id="meta_title" name="meta_title" placeholder="网页描述标题" class="col-xs-10 col-sm-5"
+                            value="{% if context.info.has_key('meta_title') %}{{context.info['meta_title']}}{%end%}"
+                    />
+                </div>
+            </div>
+            <div class="space-4"></div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label no-padding-right" for="meta_description">META描述</label>
+                <div class="col-sm-9">
+                    <input type="text" id="meta_description" name="meta_description" placeholder="网页描述标题" class="col-xs-10 col-sm-5"
+                            value="{% if context.info.has_key('meta_description') %}{{context.info['meta_description']}}{%end%}"
+                    />
+                </div>
+            </div>
+            <div class="space-4"></div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label no-padding-right" for="meta_keywords">META关键词</label>
+                <div class="col-sm-9">
+                    <input type="text" id="meta_keywords" name="meta_keywords" placeholder="网页描述关键词" class="col-xs-10 col-sm-5"
+                           value="{% if context.info.has_key('meta_keywords') %}{{context.info['meta_keywords']}}{%end%}"
+                    />
+                </div>
+            </div>
+            <div class="space-4"></div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label no-padding-right" for="content">文章内容</label>
+                <div class="col-sm-9">
+                    <div class="wysiwyg-editor" id="content" name='content' style="max-height:350px;height: 300px;">
+                        {% if context.info.has_key('content') %}{{context.info['content']}}{%end%}
+                    </div>
+                </div>
+            </div>
+            <div class="space-4"></div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label no-padding-right" for="content">上传附件</label>
+                <div class="col-sm-10" id="div-upload-files" >
+                    <input type="file" name="file" id="fileupload"  style="display:none" onclick="upload()" multiple/>
+                    <a href='' onclick="document.getElementById('fileupload').click();return false;">添加附件</a>
+                    <input type="hidden" name="imgs_url" id="imgs_url" value=""/>
+                    <input type="hidden" name="old_files_url" id="old_files_url" value=""/>
+                </div>
+                <div class="col-sm-5" id="new_imgs">
+                    {% if context.info.has_key('attachment') and len(context.info['attachment'])!=0 %}
+                    {% for item in context.info['attachment'] %}
+                    <div class="ace-file-input ace-file-multiple" id="{{item.name}}">
+                        <input multiple="" type="file" id="id-input-file-3">
+                        <label class="file-label hide-placeholder selected">
+                            <span class="file-name" data-title="{{item.filename}}">
+                                <img class="middle" style="width: 50px; height: 50px;" src="{{item.url}}">
+                                <i class="icon-picture"></i>
+                            </span>
+                            <span>{{item.url}}</span>
+                        </label>
+                        <a class="remove" href="javascript:;" onclick="deleteOldAtta('{{item.name}}', '{{item.id}}');"><i class="icon-remove"></i></a>
+                    </div>
+                    {%end%}
+                    {%end%}
+                </div>
+            </div>
+            {% raw xsrf_form_html() %}
+            <input type="hidden" value="" name="node_content"/>
+            <input type="hidden" value="{% if context.info.has_key('id') %}{{context.info['id']}}{% end %}" name="node_id"/>
+            <input type="hidden" value="{% if context.info.has_key('content_id') %}{{context.info['content_id']}}{% end %}" name="content_id"/>
+            <div class="clearfix form-actions">
+                <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" type="submit">
+                        <i class="icon-ok bigger-110"></i>
+                        提交
+                    </button>
+                    &nbsp; &nbsp; &nbsp;
+                    <button class="btn" type="reset" id="reset">
+                        <i class="icon-undo bigger-110"></i>
+                        重置
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% end %}
+{% block js_content %}
+<script src="/static/admin/js/date-time/bootstrap-datepicker.min.js"></script>
+<script src="/static/admin/js/jquery.validate.min.js"></script>
+<script src="/static/admin/js/bootstrap-tagsinput.js"></script>
+<script src="/static/admin/js/jquery.autocomplete.js"></script>
+<script src="/static/admin/js/jquery.ajaxQueue.js"></script>
+<script src="/static/admin/js/typeahead.js"></script>
+<script src="/static/admin/js/bootstrap-wysiwyg.min.js"></script>
+<script src="/static/admin/js/jquery.hotkeys.min.js"></script>
+<script src="/static/admin/js/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
+<script src="/static/admin/js/jquery-file-upload/js/jquery.iframe-transport.js" type="text/javascript"></script>
+<script src="/static/admin/js/jquery-file-upload/js/jquery.fileupload.js"></script>
+
+<script src="/static/admin/js/common.js"></script>
+<script>
+var _xsrf;
+$(document).ready(function(){
+    _xsrf = getCookie("_xsrf");
+    //清空$('#imgs_url')缓存数据
+    $('#imgs_url').val('');
+    $('#old_files_url').val('');
+
+    //tag显示
+    var el = $('#tag_ids');
+    el.tagsinput({
+      itemValue: 'id',
+      itemText: 'name'
+    });
+    $('#admin_cms_form .bootstrap-tagsinput input').hide();
+    $("#node_tag_name").autocomplete("/admin/cms/index",{
+        extraParams:{act:'search_tags', _xsrf:getCookie("_xsrf"), limit:10},
+		multiple: true,
+        max: 10,
+		dataType: "json",
+		parse: function(data) {
+			return $.map(data, function(row) {
+				return {
+					data: row,
+					value: row.id,
+					result: row.name
+				}
+			});
+		},
+		formatItem: function(item) {
+			return item.name;
+		}
+	}).result(function(e, item) {
+        el.tagsinput('add', { "id": item.id , "name": item.name });
+    });
+    //添加tag
+    var tags = {%if context.info.has_key('tags')%}{%raw context.info['tags']%}{%else%}{}{%end%};
+    $.each( tags, function(index, content){
+        el.tagsinput('add', { "id": content.id , "name": content.name });
+    });
+    $('#node_publish_time').datepicker({autoclose:true}).next().on(ace.click_event, function(){
+        $(this).prev().focus();
+    });
+    $('#content').ace_wysiwyg({
+		toolbar:
+		[
+			'font',
+			null,
+			'fontSize',
+			null,
+			{name:'bold', className:'btn-info'},
+			{name:'italic', className:'btn-info'},
+			{name:'strikethrough', className:'btn-info'},
+			{name:'underline', className:'btn-info'},
+			null,
+			{name:'insertunorderedlist', className:'btn-success'},
+			{name:'insertorderedlist', className:'btn-success'},
+			{name:'outdent', className:'btn-purple'},
+			{name:'indent', className:'btn-purple'},
+			null,
+			{name:'justifyleft', className:'btn-primary'},
+			{name:'justifycenter', className:'btn-primary'},
+			{name:'justifyright', className:'btn-primary'},
+			{name:'justifyfull', className:'btn-inverse'},
+			null,
+			{name:'createLink', className:'btn-pink'},
+			{name:'unlink', className:'btn-pink'},
+			null,
+			{name:'insertImage', className:'btn-success'},
+			null,
+			'foreColor',
+			null,
+			{name:'undo', className:'btn-grey'},
+			{name:'redo', className:'btn-grey'}
+		],
+		'wysiwyg': {
+			fileUploadError: showErrorAlert
+		}
+	}).prev().addClass('wysiwyg-style2');
+    function showErrorAlert (reason, detail) {
+		var msg='';
+		if (reason==='unsupported-file-type') { msg = "Unsupported format " +detail; }
+		else {
+			console.log("error uploading file", reason, detail);
+		}
+		$('<div class="alert"> <button type="button" class="close" data-dismiss="alert">&times;</button>'+
+		 '<strong>File upload error</strong> '+msg+' </div>').prependTo('#alerts');
+	}
+
+    //表单验证
+    var validator = $('#admin_cms_form').validate({
+        errorElement: 'div',
+        errorClass: 'alert-danger',
+        focusInvalid: true,
+        rules: {
+            node_name: "required",
+            page_title: "required",
+            node_status: 'required',
+            meta_title: 'required',
+            meta_description: 'required',
+            content: 'required'
+        },
+        messages: {
+            node_name: "文章题目不能为空",
+            page_title: "page_title不能为空",
+            node_status: '状态不能为空',
+            meta_title: 'meta_title不能为空',
+            meta_description: 'meta_description不能为空',
+            content: '内容不能为空'
+        },
+        submitHandler:function(form){
+            $('input[name="node_content"]').val($("#content").html());
+            submitFormByAjax('#admin_cms_form', '/admin/cms/info');
+        }
+    });
+    $("#reset").click(function() {
+        validator.resetForm();
+    });
+});
+function upload() {
+    $('#fileupload').fileupload({
+        url:"/admin/cms/fileupload",
+        maxFileSize: 5000000,
+        acceptFileTypes: /(\.|\/)(gif|jpe?g|png|docx?|xlsx?|txt)$/i,
+        formData: {_xsrf: _xsrf},
+        dataType: 'json',
+        done: function (e, data) {
+            result = data.result;
+            if(result.code!='success'){
+                alert(result.msg);
+                return;
+            }
+            var img_vals = $('#imgs_url').val();
+            if(img_vals==''){
+                $('#imgs_url').val(result.res.file_name);
+            } else{
+                $('#imgs_url').val(img_vals+','+result.res.file_name);
+            }
+
+            var file_name = (result.res.file_name).split('.')[0];
+            var str = '<div class="ace-file-input ace-file-multiple" id="'+file_name+'">'
+                        +'<input multiple="" type="file" id="id-input-file-3">'
+                        +'<label class="file-label hide-placeholder selected">'
+                            +'<span class="file-name" data-title="'+result.res.file_name+'">'
+                                +'<img class="middle" style="width: 50px; height: 50px;" src="'+result.res.url+'"/>'
+                                +'<i class="icon-picture"></i>'
+                            +'</span>'
+                            +'<span>'+result.res.url+'</span>'
+                        +'</label>'
+                        +'<a class="remove" href="javascript:;" onclick="deleteAtta(\''+file_name+'\');"><i class="icon-remove"></i></a>'
+                    +'</div>';
+            $("#new_imgs").append(str);
+        }
+    });
+}
+//附件删除
+function deleteAtta(file_name){
+    $.ajax({
+        url:'/admin/cms/deleteupload',
+        type:'POST',
+        data:{file_name:file_name, _xsrf: _xsrf}
+    }).done(function(){
+        $("#new_imgs #"+file_name).remove();
+        var files = ($('#imgs_url').val()).split(',');
+        var res = '';
+        $.each(files, function(i) {
+            var tmp = files[i].split('.');
+            if(tmp[0]!=file_name){
+                res += files[i]+',';
+            }
+        });
+        if(res.substring(0, res.length-1)==','){
+            res = res.substring(0, res.length-1);
+        }
+        $('#imgs_url').val(res);
+    });
+}
+function deleteOldAtta(file_name, file_id){
+    var tmp = $('#old_files_url').val();
+    if(tmp!=''){
+        $('#old_files_url').val(tmp+','+file_id)
+    } else{
+        $('#old_files_url').val(file_id)
+    }
+    $("#new_imgs #"+file_name).remove();
+}
+</script>
+{% end %}

@@ -1,0 +1,93 @@
+{% extends ../base.html %}
+{% block content %}
+<div id="msg">
+    {% if context.error %}
+    <div class="alert alert-danger show_msg" role="alert" id="warning-block">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>提示！</strong> <span>{{context.error}}</span>
+    </div>
+    {% end %}
+</div>
+<div class="row">
+    <div class="col-md-12" style="text-align:center;margin:50px 0 0 0;">
+		<div class="step">
+			<div class="nux-step-line" style="width:60%"></div>
+			<div id="" class="step1" style="width:40%;display: inline-block;float:left;">
+				<div class="nux-step-wrapper curr">
+					<div class="number">1</div>
+					<h2 class="curr-text">验证邮箱</h2>
+				</div>
+			</div>
+		</div>
+        <div class="clearfix"></div>
+		<div class="continue" >
+            <form class="form-horizontal" method="post" action="/reg" autocomplete="off">
+                <div class="form-group"  style="margin:0 auto;width:500px;text-align:center; ">
+                    <label for="verify_email" class="col-sm-2 control-label">邮箱：</label>
+                    <div class="col-sm-8">
+                      <input type="email" class="form-control" id="verify_email" name="verify_email" placeholder="Email" value="{%if context.has_key('user_email')%}{{context.user_email}}{%end%}" disabled>
+                    </div>
+                </div>
+                <div class="form-group"  style="margin:0 auto;width:500px;text-align:center; ">
+                    <div class="col-sm-offset-2 col-sm-8" style="margin-top: 15px;">
+                        <button type="button" class="btn btn-primary btn-sm" style="margin-right: 15px;" onclick="goBack();"><span class="glyphicon glyphicon-arrow-left"></span>&nbsp;返回</button>
+                        <button type="button" class="btn btn-primary btn-sm {% if not context.is_send %}hidden{% end %}" onclick="sendEmail();" id="send_email"><span id="send_email">邮箱验证&nbsp;<span class="glyphicon glyphicon-arrow-right"></span></span></button>
+                        <button type="submit" class="btn btn-primary btn-sm {% if context.is_send %}hidden{% end %}" id="go_next">下一步&nbsp;<span class="glyphicon glyphicon-arrow-right"></span></button>
+                        <input type="hidden" value="2" name="next_step">
+                        {% module xsrf_form_html() %}
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
+</div>
+{% end %}
+{% block js_content %}
+<script>
+function goBack(){
+    location.href = '/reg/?step=0';
+}
+function sendEmail(){
+    var email = $('#verify_email').val();
+    var msg = '';
+    var flag = false;
+    var tmp = {};
+    $('#send_email').html('请稍等……');
+    $('#send_email').attr('disabled',"true");
+    $.ajax({
+            type: "POST",
+            url: '/sendemail',
+            data: {_xsrf: getCookie("_xsrf"), email:email},
+            dataType:"json",
+            async: false,
+            success: function (data) {
+                if(data.code=='error'){
+                    msg = data.msg;
+                } else{
+                    if(data.res==''){
+                         msg = data.msg;
+                    } else{
+                        if(data.res=='mail.qq.com'){
+                            msg = data.host+'/sendemail/?email='+email;
+                            tmp['height'] = '500px';
+                        } else{
+                            msg = data.msg;
+                        }
+                    }
+                    flag = true;
+                }
+            },
+            error: false
+    });
+    $('#send_email').html('邮箱验证&nbsp;<span class="glyphicon glyphicon-arrow-right"></span>');
+    $('#send_email').removeAttr("disabled");
+    var opts = { 'title':'到邮箱去验证', 'content': msg, 'btn_ok_text':'', 'btn_cancel_text':'', 'width':'550px'};
+    var d = new Dialog($.extend(opts, tmp));
+    d.init();
+    if(flag){
+        $('#send_email').hide();
+        $('#go_next').removeClass('hidden')
+    }
+}
+</script>
+{% end %}

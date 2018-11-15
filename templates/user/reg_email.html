@@ -1,0 +1,71 @@
+<style>
+.instruction {
+  margin-bottom: 10px;
+  font-size: 13px;
+  line-height: 17px;
+  color: #333;
+  font-weight: normal;
+}
+.inner-content {
+  margin-left: 15px;
+}
+</style>
+<script src="/static/js/jquery-1.11.2.js"></script>
+<script src="/static/js/tools.js"></script>
+<div>
+    <p class="instruction">1. 前往 <a target="_blank" href="#">{{ context.jump }}</a> 导出通讯录。然后按以下步骤操作:</p>
+    <div class="inner-content">
+        <a href="#" target="_blank">
+            <img src="https://static.licdn.com/scds/common/u/images/apps/fetch/china/photo_qq_mail_export_contacts_459x424_v1.png" width="459" height="424" class="screenshot">
+        </a><br/>
+        <a href="http://{{ context.jump }}" target="_blank" class="qq-mail-link">前往邮箱</a>
+    </div>
+</div>
+<hr style="height:1px;border:none;border-top:1px solid #555555;" />
+<div>
+    <p class="instruction">
+        2. 上传导出的通讯录，添加联系人
+    </p>
+    <div class="inner-content">
+        <div id="drag-and-drop-zone">
+            <input type="file" id="email_list" name="email_list">
+        </div>
+    </div>
+</div>
+<script>
+$('#drag-and-drop-zone').uploadFile({
+    url: '/reademail',
+    dataType: 'json',
+    allowedTypes: '*',
+    fileName: 'email_list',
+    extraData: {_xsrf: getCookie("_xsrf"), 'email_name':"{{ context.jump }}"},
+    onBeforeUpload: function(id){
+        var email_list = $("#email_list").val();
+        if (email_list == "") {
+            alert("请选择vcf或cvs文件！");
+            return;
+        }
+        //判断上传文件的后缀名
+        var ext = email_list.substr(email_list.lastIndexOf('.') + 1);
+        if (ext != 'vcf' && ext != 'cvs') {
+            alert("请选择vcf或cvs文件！");
+            return false;
+        }
+    },
+    onUploadSuccess: function(id, data){
+        if(data.code=='error'){
+            alert(data.msg);
+        } else{
+            alert('上传成功');
+        }
+        $("#bg_div", parent.document).remove();
+        $("#dialogDiv", parent.document).remove();
+    },
+    onUploadError: function(id, message){
+        alert('上传失败');
+    },
+    onFileTypeError: function(file){
+        alert("文件类型错误");
+    }
+ });
+</script>

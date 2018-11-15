@@ -1,0 +1,307 @@
+{% extends ../base.html %}
+{% block content %}
+<div id="msg">
+    {% if context.error %}
+    <div class="alert alert-danger show_msg" role="alert" id="warning-block">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>错误！</strong> <span>{{context.error}}</span>
+    </div>
+    {% end %}
+</div>
+<div class="row" style="margin-top: 50px;">
+    <div class="col-md-6">
+        <form class="form-horizontal" id="reg_form" name="reg_form" method="post" action="/reg">
+            <div class="form-group">
+                <label for="reg_user_name" class="col-sm-3 control-label">昵称</label>
+                <div class="col-sm-8" id="reg_user_name_div">
+                    <input type="email" class="form-control" id="reg_user_name" name="reg_user_name"  autocomplete="off" value="{%if context.user_info%}{{context.user_info['user_name']}}{%end%}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="reg_email" class="col-sm-3 control-label">邮箱</label>
+                <div class="col-sm-8" id="reg_email_div">
+                    <input type="email" class="form-control" id="reg_email" name="reg_email" placeholder="example@gmail.com(必填)" autocomplete="off"  value="{%if context.user_info%}{{context.user_info['user_email']}}{%end%}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="reg_password" class="col-sm-3 control-label">密码</label>
+                <div class="col-sm-8" id="reg_password_div">
+                    <input type="password" class="form-control" id="reg_password" name="reg_password" placeholder="最少六位(必填)" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="reg_again_password" class="col-sm-3 control-label">确认密码</label>
+                <div class="col-sm-8"  id="reg_again_password_div">
+                    <input type="password" class="form-control" id="reg_again_password" name="reg_again_password" placeholder="最少六位(必填)" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="reg_gender_div" class="col-sm-3 control-label">性别</label>
+                <div class="col-sm-8"  id="reg_gender_div">
+                    <label class="radio-inline">
+                      <input type="radio" name="reg_gender" id="reg_gender_female" value="2" autocomplete="off" {%if context.user_info and context.user_info['gender']==2%}checked="true"{%end%}> 女性
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" name="reg_gender" id="reg_gender_male" value="1" autocomplete="off" {%if context.user_info and context.user_info['gender']==1%}checked="true"{%end%}> 男性
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" name="reg_gender" id="reg_gender_neutral" value="3" autocomplete="off" {%if context.user_info and context.user_info['gender']==3%}checked="true"{%end%}> ?
+                    </label>
+                    <label class="radio-inline lighter">(必填)</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="reg_area" class="col-sm-3 control-label">所属区域</label>
+                <div class="col-sm-5"  id="h_reg_area_div">
+                    {%if context.user_info%}<span id="reg_area_tmp" style="display:block;margin-bottom: 15px;">{{context.area}}</span>{%end%}
+                    <div id="district">
+                        <select class="form-control" id="reg_area" name="reg_area" autocomplete="off">
+                            <option value="" selected>请选择......</option>
+                            {% for item in context.district %}
+                            <option value="{{ item['id'] }}">{{ item['name'] }}</option>
+                            {% end %}
+                        </select>
+                    </div>
+                    <input type="hidden" value="" id="h_reg_area" name="h_reg_area">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-10 loginstate" id="reg_agree_div">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" name="reg_agree" value="1">同意<a href="javascript:;" onclick="agree();" style="color: #2f6f9f;">【条款】</a>
+                    </label>
+                  </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-10">
+                    <input type="hidden" value="1" name="next_step">{% module xsrf_form_html() %}
+                    {%if context.user_info%}
+                    <input type="hidden" value="1" name="reg_update">
+                    <button type="button" class="btn btn-primary" id="update_reg_btn" onclick="regSubmit(true);">修改</button>
+                    {%else%}
+                    <button type="button" class="btn btn-primary" id="reg_btn" onclick="regSubmit(false);">注册</button>
+                    {%end%}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="reset" class="btn btn-primary">取消</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-1">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td height="400" style="border-right: 1px dashed #CCCCCC; padding-left:70px;" >&nbsp;</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-md-4">
+        <div style="color: #2f6f9f;font-size: 18px;margin-bottom: 20px;">我有帐号</div>
+        <form class="form-horizontal" id="reg_login">
+            <div class="form-group">
+                <label for="user_email" class="col-sm-3 control-label">邮箱</label>
+                <div class="col-sm-8" id="login_email_div">
+                    <input type="email" class="form-control" id="user_email" name="user_email">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="user_password" class="col-sm-3 control-label">密码</label>
+                <div class="col-sm-8" id="login_password_div">
+                    <input type="password" class="form-control" id="user_password" name="user_password">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-10 loginstate">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" name="remember" value="1">保存帐号(7天)
+                    </label>
+                    <label><a href="javascript:;" onClick="clearAccount();" >消除本地帐号</a></label>
+                  </div>
+                </div>
+            </div>
+            {% module xsrf_form_html() %}
+            <input type="hidden" value="" name="fp">
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-10">
+                    <button type="button" class="btn btn-primary" onclick="regLogin();" id="login_btn">登录</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="reset" class="btn btn-primary">取消</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% end %}
+{% block js_content %}
+<script src="/static/js/fingerprint2.js"></script>
+<script>
+    var html = '<div class="alert alert-danger show_msg" role="alert" id="warning-block">'
+                        +'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+                        +'<strong>错误！</strong> <span>{str}</span>'
+                    +'</div>';
+     //判断昵称和邮箱是否唯一
+     function checkEmailOrNickname(obj, type) {
+        var res;
+        $.ajax({
+            type: "POST",
+            url: '/checkuser',
+            data: {type:type.type, _xsrf :getCookie("_xsrf"), val:obj.value},
+            dataType:"json",
+            async: false,
+            success: function (data) {
+                if(data.code=='error'){
+                    res = false;
+                } else{
+                    res = true;
+                }
+            },
+            error: false
+        });
+        return res;
+    }
+    //注册提交
+    function regSubmit(update){
+        var rules;
+        if(update==false){
+            rules = [
+                    {name: 'reg_email',rules: 'required|valid_email', display:'邮箱', customs: [{'method':checkEmailOrNickname, 'message':'邮箱已经使用', 'param': {'type':'email'}}]},
+                    {name: 'reg_password',rules: 'required|min_length[6]', display:'密码'},
+                    {name: 'reg_again_password',rules: 'required|matches[reg_password]', display:'确认密码'},
+                    {name: 'reg_gender',rules: 'required', msg: '请选择性别'},
+                    {name: 'h_reg_area',rules: 'required', display:'所属区域'},
+                    {name: 'reg_agree',rules: 'required', msg: '您没有同意注册条款'},
+                    {name: 'reg_user_name', rules:'',  customs: [{'method':checkEmailOrNickname, 'message':'昵称已经使用', 'param': {'type':'username'}}]},
+            ];
+        } else{
+            rules = [
+                    {name: 'reg_agree',rules: 'required', msg: '您没有同意注册条款'},
+            ];
+        }
+        $('#reg_form').formValidate(
+            rules,
+            function(errors){
+                if(errors.length==0) {
+                    $('#reg_form').submit()
+                } else {
+                    var str = '';
+                    $.each(errors, function(i,val){
+                        str += val.error+'，';
+                        $('#'+val.name+'_div').addClass('has-error');
+                    });
+                    str = str.substring(0, str.length-1)+'！';
+                    var tmp = html;
+                    tmp = tmp.replace('{str}', str);
+                    $('#msg').html(tmp);
+                    delete str, tmp;
+                }
+             },
+            {showMsg: true}
+        );
+    }
+    //同意条款
+    function agree(){
+        var content = "<p class='agree'>test test test</p>";
+        var opts = {'btn_ok_text' : '同意', 'btn_cancel_text': '不同意', 'title' : '注册条款说明', 'content' : content, 'is_showbg': false};
+        var d = new Dialog(opts);
+        d.init();
+        d.bind_func('cancel', function(){
+            $('#reg_btn').attr('disabled', 'true');
+            $("input[name='reg_agree']:checkbox").attr("checked", false);
+        });
+        d.bind_func('ok', function(){
+            $('#reg_btn').removeAttr("disabled");
+            $("input[name='reg_agree']:checkbox").attr("checked", true);
+            d.closed();
+        });
+    }
+    //地区显示 联动控制
+    $(function(){
+        $("#reg_area").change(function(){
+            $(this).changeSelect({'url': '/district', 'name':'district', '_xsrf': getCookie("_xsrf"), 'css': 'margin-top:10px;', 'hidden': 'h_reg_area'});
+        });
+    });
+    //注册页面的登录
+    function regLogin(){
+        var login_email = $('#user_email').val();
+        var login_password = $('#user_password').val();
+        $('#login_btn').html('请稍等……');
+        $('#login_btn').attr('disabled',"true");
+        $('#reg_login').formValidate(
+            [
+                {name: 'user_email',rules: 'required|valid_email', display:'邮箱'},
+                {name: 'user_password',rules: 'required', display:'密码'}
+            ],
+            function(errors){
+                if(errors.length==0) {
+                    var fp = new Fingerprint2();
+                    var fp_res = '';
+                    fp.get(function(result) {
+                        fp_res = result;
+                    });
+                    $("input[name='fp']").val(fp_res);
+                    $.ajax({
+                        type: "POST",
+                        url: '/login',
+                        data: $('#reg_login').serialize(),
+                        dataType:"json",
+                        success: function (data) {
+                            if(data.code=='error'){
+                                var tmp = html;
+                                tmp = tmp.replace('{str}', data.msg);
+                                $('#msg').html(tmp);
+                                $('#login_btn').html('登录');
+                                $('#login_btn').removeAttr("disabled");
+                                delete tmp;
+                            } else{
+                                $('#reg_msg').remove();
+                                $('#login_btn').html('登录');
+                                $('#login_btn').removeAttr("disabled");
+                                window.location.href = "{{ context.next }}";
+                            }
+                        },
+                        error: function (data) {
+                            $('#login_btn').html('登录');
+                            $('#login-error').html("登录失败").show();
+                        }
+                    });
+                } else {
+                    var str = '';
+                    $.each(errors, function(i,val){
+                        str += val.error+'，';
+                        $('#'+val.name+'_div').addClass('has-error');
+                    });
+                    str = str.substring(0, str.length-1)+'！';
+                    var tmp = html;
+                    tmp = tmp.replace('{str}', str);
+                    $('#msg').html(tmp);
+                    delete str, tmp;
+                }
+             },
+            {showMsg: true}
+        );
+    }
+    //清除账号信息
+    function clearAccount() {
+        var _xsrf = getCookie("_xsrf");
+        var html = '<div class="alert alert-success show_msg" role="alert" id="warning-block">'
+                        +'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+                        +'<strong>提示，</strong> <span>{str}</span>'
+                    +'</div>';
+        $.ajax({
+            type: "POST",
+            url: '/clearaccount',
+            data: {'_xsrf': _xsrf},
+            dataType:"json",
+            success: function (data) {
+                $('#user_email').val("");
+                $('#user_email').val("");
+                html = html.replace('{str}', data.msg);
+                $('#msg').html(html);
+            },
+            error: function (data) {
+                html = html.replace('{str}', '系统错误！');
+                $('#msg').html(html);
+            }
+        });
+    }
+</script>
+{% end %}

@@ -1,0 +1,146 @@
+<link href="/static/js/summernote/summernote.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/js/tagsinput/tagsinput.css">
+<style>
+.editnote {
+	width:720px;
+	margin:10px auto 20px;
+}
+.editnote #title_bg {
+	top: 120px;
+	left: 100px;
+    text-align:center;
+}
+.editnote #title {
+	background-color: rgba(0, 0, 0, 0);
+	border: 1px dashed #CCCCCC;
+	font-size: 16px;
+	height: 40px;
+	line-height: 40px;
+	margin-bottom: 14px;
+	outline: medium none;
+	text-align: center;
+	width: 720px;
+	padding: 0.4ex;
+}
+.note-editor.note-frame {
+    border: 1px dashed #CCCCCC;
+}
+.panel-default > .panel-heading {
+    background-color: white;
+}
+.panel {
+    border-radius: 0px;
+}
+.note-editor.note-frame .note-statusbar {
+    background-color: white;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+.bootstrap-tagsinput {
+    border-radius: 0px;
+}
+.tags>.tag-panel .tag-name {
+    font-size: 10px;
+    text-decoration: none;
+}
+.tag-panel dt {
+    font-weight: normal;
+}
+.tags > .tag-panel a:not(.tag-more) {
+    color: #37a;
+    cursor: pointer;
+    margin-right: .2em;
+    white-space: nowrap;
+    display: inline-block;
+    line-height: 1.2;
+    padding:2px;
+}
+.tags > .tag-panel a:hover:not(.tag-more) {
+    text-decoration: none;
+    background-color: #d9edf7;
+}
+.editnote label {
+    font-size: 14px;
+    font-weight: normal;
+}
+.editnote .is-open {
+    font-size: 12px;
+    vertical-align:text-top;
+    margin-top:0;
+}
+.tags .tag-more {
+    font-size: 10px;
+    color: black;
+}
+.tags .tag-more:hover {
+    text-decoration: none;
+    background-color: white;
+}
+.editnote .note-reply, .editnote .radio-inline {
+    font-size: 12px;
+}
+.editnote .note-reply > input {
+    margin-right: 5px;
+}
+</style>
+<script src="/static/js/summernote/summernote.js"></script>
+<script src="/static/js/summernote/lang/summernote-zh-CN.js"></script>
+<div style="height:auto; float:left; min-width: 520px; width: 66%;">
+    <form id="note-form" name="note_form">
+        <div class="editnote">
+            <div class="title-img"></div>
+            <div id='title_bg' >
+                <input id='title' type='text' value='' autocomplete='off' placeholder='标题' name='title'/>
+            </div>
+            <div id="summernote"></div>
+            <br/>
+
+            <div class="form-group tags">
+                <label for="tags">标签</label><br/>
+                <input type="text" value="" data-role="tagsinput" id="tags"  name="tags"/><br/>
+                <dl class="tag-panel">
+                    <dt>常用标签：</dt>
+                    <dd>
+                        {% for tag in context.tags %}
+                        <a href="javascript:;" data-id="{{ tag.id }}" class="tag-name" onclick="addTagName('{{ tag.name }}');">{{ tag.name }}</a>
+                        {% end %}
+                        {% if len(context.tags)>10 %}
+                        <a href="javascript:;" class="tag-more" onclick="showTags(this);"><i class="fa fa-angle-down"></i>更多</a>
+                        {% end %}
+                    </dd>
+                </dl>
+            </div><br/>
+
+            <div class="form-group">
+                <label for="is-open">设置可见</label><br/>
+                <label class="radio-inline">
+                  <input type="radio" name="is_open" class="is-open"  checked value="1">所有人
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="is_open" class="is-open"  value="2">仅群组
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="is_open" class="is-open"  value="3">仅朋友
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="is_open" class="is-open"  value="4">仅自己
+                </label>
+            </div><br/>
+
+            <div class="form-group">
+                <label for="note-reply">权限设置</label><br/>
+                <p class="note-reply">
+                    <input type="checkbox" value="1" name="is_comment" checked>可以评论
+                </p>
+            </div>
+            {% module xsrf_form_html() %}
+            <button type="button" class="btn btn-default btn-sm">预览</button>&nbsp;&nbsp;
+            <button type="button" class="btn btn-info btn-sm" onclick="publicNoteSubmit();">保存</button>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="/static/js/tools.js"></script>
+<script>
+var url = "{{ context.domain_name }}";
+</script>
+<script type="text/javascript" src="/ucenter/js/note.js"></script>

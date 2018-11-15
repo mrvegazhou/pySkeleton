@@ -1,0 +1,87 @@
+<!-- basic scripts -->
+<!--[if !IE]> -->
+<script src="/static/js/jquery-2.0.3.min.js"></script>
+<!-- <![endif]-->
+<!--[if IE]>
+<script src="/static/js/jquery-1.11.2.js"></script>
+<![endif]-->
+<!--[if !IE]> -->
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/static/js/jquery-2.0.3.min.js'>"+"<"+"/script>");
+</script>
+<!-- <![endif]-->
+<!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='/static/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+<script type="text/javascript">
+    if("ontouchend" in document) document.write("<script src='/static/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+</script>
+<!-- inline scripts related to this page -->
+<script type="text/javascript">
+    function show_box(id) {
+     jQuery('.widget-box.visible').removeClass('visible');
+     jQuery('#'+id).addClass('visible');
+    }
+</script>
+<script src="/static/admin/js/jquery.validate.min.js"></script>
+<script>
+jQuery(function($) {
+    $('#login_form').validate({
+        errorElement: 'div',
+        errorClass: 'help-block',
+        focusInvalid: false,
+        rules: {
+            admin_password: {
+                required: true,
+                minlength: 5
+            },
+            admin_user: {
+                required: true
+            }
+        },
+        messages: {
+            admin_password: {
+                required: "请输入密码",
+                minlength: "密码长度大于5"
+            },
+            admin_user: {
+                required: "请输入登录名"
+            }
+        },
+        invalidHandler: function (event, validator) {
+            $('.alert-danger', $('.login-form')).show();
+        },
+        highlight: function (e) {
+            $(e).closest('label').removeClass('has-info').addClass('has-error');
+        },
+        success: function (e) {
+            $(e).closest('label').removeClass('has-error').addClass('has-info');
+            $(e).remove();
+        },
+        submitHandler: function (form) {
+           var mask_div =  "<div id='cover' style='position:fixed; top: 0px; right:0px; bottom:0px;filter: alpha(opacity=60); background-color: #777;z-index: 1002; left: 0px;opacity:0.5; -moz-opacity:0.5;'></div>";
+           $(document.body).append(mask_div);
+		   $.ajax({
+                type:"POST",
+                url:"/admin/login",
+                data:{_xsrf:$("input[name='_xsrf']").val(), admin_user: $.trim($("input[name='admin_user']").val()), admin_password: $.trim($("input[name='admin_password']").val())},
+                datatype: "json",
+                success:function(data){
+                    data = JSON.parse(data);
+                    if( data.code=='success' )
+                    {
+                        location.href = data.next;
+                    }
+                    else
+                    {
+                        $(form).siblings('h4').removeClass('blue').addClass('red').html("<i class='icon-warning-sign red'></i>"+data.msg);
+                    }
+                    $("#cover").hide();
+                }
+             });
+        }
+    });
+})
+</script>

@@ -1,0 +1,56 @@
+<div id="login-box" class="login-box visible widget-box no-border">
+    <div class="widget-body">
+        <div class="widget-main">
+            <h4 class="header blue lighter bigger">
+                <i class="icon-coffee green"></i>
+                请输入登录信息
+            </h4>
+            <div class="space-6"></div>
+            <form action="/admin/login" method="post" id="login_form">
+                {% module xsrf_form_html() %}
+                <fieldset>
+                    <label class="block clearfix">
+                        <span class="block input-icon input-icon-right">
+                            <input type="text" class="form-control" placeholder="登录名" name="admin_user" />
+                            <i class="icon-user"></i>
+                        </span>
+                    </label>
+                    <label class="block clearfix">
+                        <span class="block input-icon input-icon-right">
+                            <input type="password" class="form-control" placeholder="密码" name="admin_password" />
+                            <i class="icon-lock"></i>
+                        </span>
+                    </label>
+                    <div class="space"></div>
+                    <div class="clearfix">
+                        <label class="inline">
+                            <input type="checkbox" class="ace" />
+                            <span class="lbl"> Remember Me</span>
+                        </label>
+                        <button type="submit" class="width-35 pull-right btn btn-sm btn-primary">
+                            <i class="icon-key"></i>
+                            登录
+                        </button>
+                    </div>
+                    <div class="space-4"></div>
+                </fieldset>
+            </form>
+        </div><!-- /widget-main -->
+
+        <div class="toolbar clearfix">
+            <div>
+                <a href="#" onclick="show_box('forgot-box'); return false;" class="forgot-password-link">
+                    <i class="icon-arrow-left"></i>
+                    忘记密码
+                </a>
+            </div>
+
+            <div>
+                <a href="#" onclick="show_box('signup-box'); return false;" class="user-signup-link">
+                    注册
+                    <i class="icon-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div><!-- /widget-body -->
+</div>

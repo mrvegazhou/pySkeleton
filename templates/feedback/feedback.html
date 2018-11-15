@@ -1,0 +1,178 @@
+{% extends ../base.html %}
+{% block css_content %}
+<link rel="stylesheet" href="/static/js/tagsinput/tagsinput.css">
+{% end %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-9">
+        <ol class="breadcrumb">
+          <li><a href="#">反馈列表</a></li>
+          <li class="active">提问表单</li>
+        </ol>
+    </div>
+    <div class="col-md-12 feedback-msg" id="feedback-msg">
+    </div>
+    <div class="col-md-12">
+        <form id="feedback-form">
+          <div class="form-group">
+            <label for="feedback-email">邮箱<span style="color: red;">*</span></label>
+            <input type="email" class="form-control" id="feedback-email" name="email" placeholder="email" style="width: 50%;" value="{{ context.feedback_user_info['user_email'] }}">
+          </div>
+          <div class="form-group">
+            <label for="tags">标签</label><br/>
+              <input type="text" value="" data-role="tagsinput" id="tags" name="tags"/>
+          </div>
+          <div class="form-group">
+            <label for="feedback-title">标题<span style="color: red;">*</span></label>
+            <input type="text" class="form-control" name="title" id="feedback-title" placeholder="" style="width: 50%;">
+          </div>
+          <div class="form-group">
+            <label for="feedback-content">反馈内容<span style="color: red;">*</span></label>
+            <!--style给定宽度可以影响编辑器的最终宽度-->
+            <script type="text/plain" id="editor_content" name="content">
+                <p>这里我可以写一些意见反馈</p>
+            </script>
+            <p class="help-block">写出详细的内容</p>
+          </div>
+            {% module xsrf_form_html() %}
+            <button type="button" class="btn btn-primary" onclick="feedbackSubmit();" style="float:left;">提交内容</button>
+            <input type="text" class="form-control" style="float:left;width: 75px;margin-left: 15px;" name="captcha">
+            <img src="/feedback/captcha/validate.gif?r={{ context.r }}" style="float:left;margin-left:3px;" onclick="flushCaptcha(this);"/>
+            <span id='error-captcha' style="color:red;height:34px;line-height:34px;margin-left: 5px;display: none;">请填写验证码</span>
+        </form>
+    </div>
+</div>
+
+{% module Chat() %}
+{% end %}
+
+{% block js_content %}
+
+<!-- 配置文件 <script src="/static/js/tagsinput/tagsinput.js"></script>-->
+<script type="text/javascript" src="/static/js/UEditor/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="/static/js/UEditor/ueditor.all.js"></script>
+<script type="text/javascript" src="/static/js/tools.js"></script>
+<script type="text/javascript">
+if($('#tags').val()==''){
+    $('#tags').val('');
+}
+UE.getEditor('editor_content', {
+    //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个
+    toolbars:[['fullscreen', 'source', '|', 'undo', 'redo', '|',
+            'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
+            'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
+            'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
+            'directionalityltr', 'directionalityrtl', 'indent', '|',
+            'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
+            'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
+            'simpleupload', 'insertimage', 'emotion', 'scrawl', 'insertcode', 'template', '|',
+            'horizontal', '|',
+            'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts']],
+    //focus时自动清空初始化时的内容
+    autoClearinitialContent:true,
+    //关闭字数统计
+    wordCount:false,
+    //关闭elementPath
+    elementPathEnabled:false,
+    //默认的编辑区域高度
+    initialFrameHeight:300,
+    //更多其他参数，请参考ueditor.config.js中的配置项
+    serverUrl: '/server/editor',
+    autoFloatEnabled:false,
+});
+function checkContent(){
+    if(''==UE.getEditor('editor_content').getContent()){
+        return false;
+    }
+    return true;
+}
+$("input[name='captcha']").keyup(function(){
+  if( $(this).val()!='' ){
+      $('#error-captcha').hide();
+  }
+});
+function feedbackSubmit()
+{
+    var html_str = '<div class="{str1} show_msg" role="alert" id="warning-block">'
+            +'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+            +'<strong>提示！</strong> <span>{str2}</span>'
+        +'</div>';
+    $('#feedback-form').formValidate(
+        [
+            {name: 'email',rules: 'required|valid_email', display:'邮箱'},
+            {name: 'title',rules: 'required', display:'标题'},
+            {name: 'captcha',rules: 'required', display:'验证码'},
+            {name: 'content',rules: '', customs: [{'method':checkContent, 'message':'内容不能为空', 'param': {}}]}
+        ],
+        function(errors){
+            var res_msg = '';
+            if(errors.length==0) {
+                $.ajax({
+                    type: "POST",
+                    url: '/feedback/publish',
+                    data: $('#feedback-form').serialize(),
+                    dataType:"json",
+                    success: function (data) {
+                        html_str = html_str.replace('{str2}', data.msg);
+                        if( data.code=='success' ){
+                            html_str = html_str.replace('{str1}', 'alert alert-success');
+                        } else {
+                            if( data.num=='034' ) {
+                                $('#error-captcha').html(data.msg);
+                                $('#error-captcha').show();
+                                return;
+                            } else {
+                                html_str = html_str.replace('{str1}', 'alert alert-danger');
+                            }
+                        }
+                        $('#feedback-msg').html(html_str);
+                        if(data.url){
+                            location.href = data.url;
+                        }
+                    },
+                    error: function (data) {
+                        html_str = html_str.replace('{str2}', '提交失败！');
+                        html_str = html_str.replace('{str1}', 'alert alert-danger');
+                        $('#feedback-msg').html(html_str);
+                    }
+                });
+            } else {
+                var str = '', is_captch = false;
+                $.each(errors, function(i,val){
+                    if( val['name']=='captcha' ){
+                        $('#error-captcha').show();
+                        is_captch = true;
+                    } else {
+                        str += val.error+',';
+                    }
+                });
+                str = str.substring(0, str.length-1);
+                html_str = html_str.replace('{str2}', str);
+                html_str = html_str.replace('{str1}', 'alert alert-danger');
+                $('#feedback-msg').html(html_str);
+            }
+            delete str, html_str, res_msg;
+            if( !is_captch ){
+                scrollTo('feedback-msg');
+            }
+         },
+        {showMsg: true}
+    );
+}
+
+//标签管理
+$('#tags').tagInput({maxTags:5, selectSearchOpt:{allowNoKeyword: false,
+            multiWord: true,
+            separator: ",",
+            url: '{{ context.domain_name }}/feedback/gettags/?q=',
+            indexId: 0,
+            indexKey: 1,
+            idField: 'id',
+            adjustWidth:true,
+            keyField: 'name',
+        }});
+
+</script>
+{% end %}

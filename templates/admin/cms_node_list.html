@@ -1,0 +1,344 @@
+{% extends base.html %}
+{% block css %}
+<link rel="stylesheet" href="/static/admin/css/ui.jqgrid.css" />
+<link rel="stylesheet" href="/static/admin/css/daterangepicker.css" />
+<link rel="stylesheet" href="/static/admin/css/bootstrap-tagsinput.css" />
+<link rel="stylesheet" href="/static/admin/css/jquery.autocomplete.css" />
+<link rel="stylesheet" href="/static/admin/css/datepicker.css" />
+{% end %}
+{% block breadcrumb %}
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">CMS管理</a>
+        </li>
+        <li class="active">文章列表</li>
+    </ul>
+{% end %}
+{% block page_header %}
+{% end %}
+{% block content %}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="row">
+            <div class="col-xs-12 col-sm-5 col-md-7" >
+                <div class="alert alert-danger hide" id="form-error"></div>
+                <div class="widget-box">
+                    <div class="widget-header">
+                        <h4>文章内容表单</h4>
+                        <div class="widget-toolbar">
+                            <a href="#" data-action="collapse">
+                                <i class="icon-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="widget-body">
+                        <div class="widget-main">
+                            <form class="form-horizontal" role="form" id="admin_cms_form" method="post">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="name">标题</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="name" id="name" placeholder="标题" class="col-xs-10 col-sm-5 col-md-7" data-require>
+                                    </div>
+                                </div>
+                                <div class="space-4"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="range_picker_create_time">创建时间</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="icon-calendar"></i>
+                                            </span>
+                                            <input type="text" id="range_picker_create_time" class="col-xs-10 col-sm-5 col-md-7" name="create_time"  data-require/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="space-4"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="range_picker_publish_time">发布时间</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="icon-calendar"></i>
+                                            </span>
+                                            <input type="text" id="range_picker_publish_time" class="col-xs-10 col-sm-5 col-md-7" name="publish_time"  data-require/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="space-4"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="range_picker_delete_time">删除时间</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="icon-calendar"></i>
+                                            </span>
+                                            <input type="text" id="range_picker_delete_time" class="col-xs-10 col-sm-5 col-md-7" name="delete_time"  data-require/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="space-4"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="tags">搜索标签名称</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="tags" id="tags" value="" placeholder="tags ..." class="col-xs-10 col-sm-5 col-md-7"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="tag_ids">标签</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="tag_ids" id="tag_ids" value=""  data-require/>
+                                    </div>
+                                </div>
+                                <div class="space-4"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">状态</label>
+                                    <div class="radio">
+                                        <label>
+                                            <input name="status" type="radio" class="ace" data-require checked value="1"/>
+                                            <span class="lbl">正常</span>
+                                        </label>
+                                        <label>
+                                            <input name="status" type="radio" class="ace" data-require value="0"/>
+                                            <span class="lbl">禁止</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="space-4"></div>
+                                <div class="clearfix ">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <button class="btn btn-xs btn-info" type="button" onclick="operateInfoAndRefresh(this, 'admin_cms_form', 'grid-table');"  data-action="jqgrid-add" data-url="/admin/cms/index">
+                                            <i class="icon-ok bigger-110"></i>
+                                            添加
+                                        </button>
+                                        &nbsp; &nbsp;
+                                        <button class="btn btn-xs btn-info" type="button" onclick="operateInfoAndRefresh(this, 'admin_cms_form', 'grid-table');"  data-action="jqgrid-search" data-url="/admin/cms/index">
+                                            <i class="icon-search bigger-110"></i>
+                                            搜索
+                                        </button>
+                                        &nbsp; &nbsp;
+                                        <button class="btn btn-xs" type="reset">
+                                            <i class="icon-undo bigger-110"></i>
+                                            重置
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="space-7"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table id="grid-table"></table>
+		<div id="grid-pager"></div>
+    </div>
+</div>
+{% end %}
+{% block js_content %}
+<script src="/static/admin/js/jqGrid/jquery.jqGrid.min.js"></script>
+<script src="/static/admin/js/jqGrid/i18n/grid.locale-en.js"></script>
+<script src="/static/admin/js/date-time/moment.min.js"></script>
+<script src="/static/admin/js/date-time/bootstrap-datepicker.min.js"></script>
+<script src="/static/admin/js/date-time/daterangepicker.min.js"></script>
+<script src="/static/admin/js/date-time/bootstrap-datepicker.min.js"></script>
+<script src="/static/admin/js/jquery.validate.min.js"></script>
+<script src="/static/admin/js/bootstrap-tagsinput.js"></script>
+<script src="/static/admin/js/jquery.autocomplete.js"></script>
+<script src="/static/admin/js/jquery.ajaxQueue.js"></script>
+<script src="/static/admin/js/typeahead.js"></script>
+<script src="/static/admin/js/common.js"></script>
+<script>
+$(document).ready(function(){
+    var _xsrf = getCookie("_xsrf");
+    $("#grid-table").jqGrid({
+        datatype: "json",
+        url:'/admin/cms/index',
+        postData:{_xsrf:_xsrf , act:'list'},
+        mtype: 'post',
+        height: 300,
+        autowidth:true,
+        colNames:['操作', '编号', '标题', '创建时间', '发布时间', '删除时间', '状态', 'Tags', 'Tag标签'],
+        colModel:[
+            {name:'operate',index:'', width:80, sortable:false, resize:false,
+                        formatter:'actions',
+                        formatoptions:{
+                            keys:true,
+                            delOptions:{recreateForm: true, beforeShowForm:beforeDeleteCallback,
+                                        url: "/admin/cms/index",
+                                        mtype: 'post',
+                                        serializeDelData: function(postData) {
+                                                            return { 'postData': JSON.stringify(postData), _xsrf:_xsrf, act:'delete-one'}
+                                               }
+                            },
+                            editformbutton:true,
+                            editOptions:{recreateForm: true, beforeShowForm:function(form){
+                                                                                    beforeEditCallback;
+                                                                                    searchTags(form);
+                                                                                  },
+                                            url: "/admin/cms/index",
+                                            mtype: 'post',
+                                            width: 500,
+                                            closeAfterEdit: true,
+                                            serializeEditData: function(postData) {
+                                                                    return { 'postData': JSON.stringify(postData), _xsrf:_xsrf, act:'edit'}
+                                                               }
+                            }
+                        }
+                    },
+            {name:'id',index:'id', sorttype:"int",sortable: false},
+            {name:'name',index:'name',sortable: false, editable: true, editoptions:{size:30},
+                formatter: function(cellvalue, options, rowObject) {
+                     return  "<a href='/admin/cms/info/?node_id="+rowObject.id+"'>"+cellvalue+"</a>";
+                }
+            },
+            {name:'create_time', index:'create_time', sortable: false},
+            {name:'publish_time', index:'publish_time', editable: true, sortable: false, editoptions:{dataInit:pickDate}},
+            {name:'delete_time',index:'delete_time',sortable: false},
+            {name:'status',index:'status',editable: true, sortable: false,
+                edittype:'select', editoptions:{value:{1:'正常',0:'禁止'}},
+                formatter:function(cellvalue, options, rowObject){
+                if(cellvalue==1){
+                    return '<span class="label label-sm label-info arrowed arrowed-righ">正常</span>';
+                }else{
+                    return '<span class="label label-sm label-error arrowed arrowed-righ">禁止</span>';
+                }
+            }},
+            {name:'tag_names',index:'tag_names',sortable: false, editable: true, editoptions:{size:30}},
+            {name:'tag_vals',index:'tag_vals',sortable: false, editable: true, hidden:true, viewable: false, editrules:{edithidden:true}, editoptions:{dataInit:function(el){
+                                                                                                                                                    var elt = $(el);
+                                                                                                                                                    var datas = elt.val();
+                                                                                                                                                    var tmp = '';
+                                                                                                                                                    elt.tagsinput({
+                                                                                                                                                      itemValue: 'id',
+                                                                                                                                                      itemText: 'name'
+                                                                                                                                                    });
+                                                                                                                                                    $.each(JSON.parse(datas), function(idx, obj) {
+                                                                                                                                                        elt.tagsinput('add', { "id": obj.id , "name": obj.name });
+                                                                                                                                                    });
+                                                                                                                                                 }
+                                                                                                                                        }
+            }
+        ],
+        pager: 'grid-pager',
+        viewrecords: true, //是否显示行数
+        multiselect: true, //是否支持多选
+        loadComplete : function() {
+						var table = this;
+						setTimeout(function(){
+							updatePagerIcons(table);
+						}, 0);
+					}
+    });
+    $('#grid-table').jqGrid('navGrid','#grid-pager',
+                    {
+                        edit: true,
+						editicon : 'icon-pencil blue',
+						add: false,
+						addicon : 'icon-plus-sign purple',
+						del: true,
+						delicon : 'icon-trash red',
+						search: false,
+						searchicon : 'icon-search orange',
+						refresh: true,
+						refreshicon : 'icon-refresh green',
+						view: true,
+						viewicon : 'icon-zoom-in grey'
+                    },
+                    {url: "/admin/cms/index", mtype: 'post',closeAfterEdit: true,
+                        beforeShowForm:function(form){
+                            $('#admin_password', form).val('');
+                        },
+                        serializeEditData: function(postData) {
+                                                return { 'postData': JSON.stringify(postData), _xsrf:_xsrf, act:'edit'}
+                        },
+                        width: 500, recreateForm: true
+                    },
+                    {url: "/admin/cms/index", mtype: 'post',closeAfterAdd: true , serializeAddData: function(postData) {
+                                            return { 'postData': JSON.stringify(postData), _xsrf:_xsrf, act:'add'}}
+                    },
+                    {url: "/admin/cms/index", mtype: 'post',serializeDelData: function(postData) {
+                                            return { 'postData': JSON.stringify(postData), _xsrf:_xsrf, act:'delete'}}
+                    }
+     );
+
+    function pickDate(el){
+        setTimeout(function () {
+            $(el).datepicker({format:'yyyy-mm-dd' , autoclose:true});
+        }, 0);
+    }
+    function searchTags(form){
+        $('#tr_tag_names .CaptionTD').html('搜索Tag');
+        $('input', '.bootstrap-tagsinput').hide();
+        var obj = $("#tag_names");
+        obj.val('');
+        obj.autocomplete("/admin/cms/index",{
+            extraParams:{act:'search_tags', _xsrf:getCookie("_xsrf"), limit:10},
+            multiple: true,
+            max: 10,
+            dataType: "json",
+            parse: function(data) {
+                return $.map(data, function(row) {
+                    return {
+                        data: row,
+                        value: row.id,
+                        result: row.name
+                    }
+                });
+            },
+            formatItem: function(item) {
+                return item.name;
+            }
+        }).result(function(e, item) {
+            $('#tag_vals').tagsinput('add', { "id": item.id , "name": item.name });
+
+        });
+    }
+    //表单验证
+    $('#admin_cms_form').validate({
+        errorElement: 'div',
+        errorClass: 'alert-danger',
+        focusInvalid: true,
+        rules: {
+            name: "required",
+            status: "required"
+        },
+        messages: {
+            name: "标题不能为空",
+            status: {required:'状态不能为空'}
+        }
+    });
+
+    $('input[id^=range_picker]').daterangepicker().prev().on(ace.click_event, function(){
+        $(this).next().focus();
+    });
+
+    var el = $('#admin_cms_form #tag_ids');
+    el.tagsinput({
+      itemValue: 'id',
+      itemText: 'name'
+    });
+    $('#admin_cms_form .bootstrap-tagsinput input').hide();
+    $("#admin_cms_form #tags").autocomplete("/admin/cms/index",{
+        extraParams:{act:'search_tags', _xsrf:getCookie("_xsrf"), limit:10},
+		multiple: true,
+        max: 10,
+		dataType: "json",
+		parse: function(data) {
+			return $.map(data, function(row) {
+				return {
+					data: row,
+					value: row.id,
+					result: row.name
+				}
+			});
+		},
+		formatItem: function(item) {
+			return item.name;
+		}
+	}).result(function(e, item) {
+        el.tagsinput('add', { "id": item.id , "name": item.name });
+    });
+});
+</script>
+{% end %}

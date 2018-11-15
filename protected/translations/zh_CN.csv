@@ -1,0 +1,74 @@
+error_network, 网络异常
+login_fail,登录失败
+login_success,登录成功
+save_email_success, 保存成功
+login_name,登录页面
+clear_account_success,清除账号成功
+user_not_exist, 该用户不存在
+email_not_exist, 该邮箱不存在
+email_nocorrect, 邮箱格式不正确
+password_no_correct, 密码错误
+password_less_six, 密码长度小于6位
+password_not_same, 确认密码不匹配
+clause_no_checked, 您没有同意注册条款
+area_no_selected, 请选择所属区域
+username_has_existed, 用户名已经存在
+gender_no_checked, 请选择性别
+email_has_existed, 邮箱已经存在
+check_file_exist_email, 请检查文件是否存在邮件列表
+save_email_file_error, 保存邮件列表失败
+save_character_test_error, 保存您的性格特点失败，请确认您填写完整
+send_email_success, 发送邮件成功
+send_email_error, 发送邮件失败
+reg_update_error, 注册信息修改失败
+reg_error, 请按照流程注册信息
+forget_email_token, 请到邮箱确认注册信息
+forget_send_email, 重新发送验证地址到邮箱
+yet_send_email, 已经发送过验证邮件
+reg_no_email_or_expire, 请确认已经填写过邮箱或邮件已经过期
+admin_userinfo_incomplete,填写信息不完整
+admin_user_not_exist,该用户不存在
+admin_password_no_correct,密码错误
+admin_session_had_expired,您的会话已经过期
+admin_delete_error,删除失败
+admin_update_error,修改失败
+admin_same_error,存在相同记录
+failure_uid, 注册用户已经失效
+error_email_token, 验证失败，请确定发送的链接是正确的
+failure_verify_url_token, 发送到您注册邮箱的确认地址已经失效
+has_verify_url_token, 您已经验证过注册确认地址
+success_verify_url, 验证成功，谢谢注册
+feedback_title_null, 反馈标题为空
+feedback_content_null, 反馈内容为空
+feedback_email_null, 反馈邮箱为空
+failure_save_feedback, 保存反馈信息失败
+email_format_error, 邮箱格式错误
+captcha_empty, 验证码为空
+captcha_error, 验证码验证失败
+comment_null_error, 评论不能为空
+feedback_id_null_error, 您评论的反馈不存在
+uid_null_error, 您未登录，无法发表
+feeback_comment_save_error, 保存反馈评论失败
+save_comment_success, 保存评论成功
+frequent_operation_error, 您操作太频繁
+sys_param_eror, 系统参数错误
+approval_votes_success, 非常感谢
+oppose_votes_success, 很遗憾
+no_login, 请登录
+so_fast_notice, 评论过快，请稍后重试
+comment_not_exist, 您投诉的评论不存在
+complaint_error, 投诉失败
+complaint_success, 投诉成功
+complaint_reason_null_error, 投诉内容不能为空
+has_vote_error, 已经投票
+user_not_exist, 用户不存在
+error_filesize, 文件大小超出限制
+error_type_not_allowed, 文件类型不允许
+badword_error, 很抱歉，您的内容里有敏感字，它们会被*替换
+newsfeed_content_null_error, 状态内容不能为空
+activity_not_exist, 您还没有参加活动
+title_is_null, 标题不能为空
+content_is_null, 内容不能为空
+has_badword, 很抱歉，您的内容里有敏感字
+system_eror, 系统错误
+url_error, 路径错误

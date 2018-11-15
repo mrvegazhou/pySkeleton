@@ -1,0 +1,18 @@
+{% extends ./base.html %}
+{% block content %}
+<div class="msg-info">
+    {% if context.has_key('error') and context.error %}
+    <h4 class="msg-h-error">错误提示：</h4>
+    <p style="text-indent:2em;">
+        <code>{{context.error}}</code>
+    </p>
+    {% else %}
+    <h4 class="msg-h-info">信息提示：</h4>
+    <p style="text-indent:2em;">
+        {{context.msg}}
+    </p>
+    {% end %}
+</div>
+{% end %}
+{% block js_content %}
+{% end %}

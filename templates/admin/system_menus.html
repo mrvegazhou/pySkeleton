@@ -1,0 +1,145 @@
+{% extends base.html %}
+{% block breadcrumb %}
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">系统设置</a>
+        </li>
+        <li class="active">后台菜单</li>
+    </ul>
+{% end %}
+{% block page_header %}
+    <h1>
+        后台菜单
+        <small>
+            <i class="icon-double-angle-right"></i>
+             列表
+        </small>
+    </h1>
+{% end %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="widget-header">
+                <div class="widget-toolbar">
+                    &nbsp;
+                    <a href="#" data-action="table-delete" data-url="/admin/system/menus" class="red">
+                        <i class="icon-trash bigger-130"></i>
+                    </a>
+                    &nbsp;
+                    <a href="#" data-action="table-add" data-url="/admin/system/menus" class="green">
+                        <i class="icon-plus bigger-130"></i>
+                    </a>
+                    &nbsp;
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id="" class="table table-striped table-bordered table-hover" name="table-list">
+                    <thead>
+                        <tr>
+                            <th class="center">
+                                <label>
+                                    <input type="checkbox" class="ace"/>
+                                    <span class="lbl"></span>
+                                </label>
+                            </th>
+                            <th>菜单名称</th>
+                            <th>地址</th>
+                            <th class="hidden-480">创建人</th>
+                            <th>
+                                <i class="icon-time bigger-110 hidden-480"></i>
+                                更新时间
+                            </th>
+                            <th class="hidden-480">状态</th>
+                            <th class="hidden-480">ICON</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% set date_format="%Y-%m-%d %H:%M:%S" %}
+                    {% for item in context.menu_list %}
+                        <tr id="table-tr-{{item.id}}">
+                            <td class="center">
+                                <label>
+                                    <input type="checkbox" class="ace" value="{{item.id}}"/>
+                                    <span class="lbl"></span>
+                                </label>
+                            </td>
+                            <td id="table-td-resource_name-{{item.id}}">
+                                {% raw context.showBlank(item.level, item.resource_name) %}
+                            </td>
+                            <td id="table-td-resource_url-{{item.id}}">{{item.resource_url}}</td>
+                            <td class="hidden-480">{{context.getUser(item.creator)}}</td>
+                            <td>{{(item.update_time).strftime(date_format)}}</td>
+                            <td class="hidden-480" id="table-td-status-{{item.id}}">
+                                {% if item.status==1 %}
+                                    <span class="label label-sm label-info arrowed arrowed-righ">正常</span>
+                                {% else %}
+                                    <span class="label label-sm label-error arrowed arrowed-righ">禁止</span>
+                                {% end %}
+                            </td>
+                            <td class="hidden-480" id="table-td-icon-{{item.id}}"><i class="{% raw item.icon %}"></i></td>
+                            <td>
+                                <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+                                    <a class="green" href="javascript:;"  data-url="/admin/system/menus" data-action="table-edit-{{item.id}}">
+                                        <i class="icon-pencil bigger-130"></i>
+                                    </a>
+                                    <a class="red" href="javascript:;" data-action="table-delete-id-{{item.id}}"  data-url="/admin/system/menus">
+                                        <i class="icon-trash bigger-130"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% end %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="dialog-confirm" class="hide">
+        <div class="alert alert-info bigger-110">
+            确定要删除菜单吗？
+        </div>
+    </div>
+    <div id="dialog-message-edit" class="hide">
+        <label class="col-sm-3 control-label no-padding-right" for="form-field-1">菜单名称</label>
+        <div class="col-sm-9">
+            <input type="text" id="form-field-1" placeholder="菜单名称" class="col-xs-10 col-sm-10"  name="resource_name" data-require="请填写菜单名称"/>
+        </div>
+        <hr/>
+        <label class="col-sm-3 control-label no-padding-right" for="form-field-2">菜单地址</label>
+        <div class="col-sm-9">
+            <input type="text" id="form-field-2" placeholder="菜单地址" class="col-xs-10 col-sm-10"  name="resource_url" data-require="请填写菜单地址"/>
+        </div>
+        <hr/><hr/>
+        <label class="col-sm-3 control-label no-padding-right" for="form-field-3">菜单ICON</label>
+        <div class="col-sm-9">
+            <input type="text" id="form-field-3" placeholder="菜单ICON" class="col-xs-10 col-sm-10"  name="icon" data-require="请填写菜单icon"/>
+        </div>
+        <hr/><hr/>
+        <label class="col-sm-3 control-label no-padding-right" for="form-field-4">菜单状态</label>
+        <div class="col-sm-9" id="form-field-4">
+            <label>
+                <input type="radio" class="ace" checked="checked" name="status" data-require="" value="1"/>
+                <span class="lbl">正常</span>
+            </label>
+            <label>
+                <input type="radio" class="ace"  name="status" data-require="" value="0"/>
+                <span class="lbl">禁止</span>
+            </label>
+        </div>
+        <hr/><hr/>
+        <label class="col-sm-3 control-label no-padding-right" for="form-field-select-5">父级菜单</label>
+        <div class="col-sm-7">
+            <select class="form-control" id="form-field-select-5" name="pid" data-require="">
+                <option value="0">请选择……</option>
+                {% for item in context.menu_list %}
+                <option value="{{item.id}}">{% raw context.showBlank(item.level, item.resource_name) %}</option>
+                {% end %}
+            </select>
+        </div>
+    </div><!-- #dialog-message -->
+{% end %}
+{% block js_content %}
+<script src="/static/admin/js/common.js"></script>
+{% end %}

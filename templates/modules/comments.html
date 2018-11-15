@@ -1,0 +1,46 @@
+<div class="answers-header mt30">
+    <h2>
+        <span id="comment-total">0</span> 讨论
+        <span style="display:none;" itemprop="answerCount">1</span>
+    </h2>
+</div>
+<div class="mt30">
+    <form id="comment-form">
+        <div class="form-group comment-txt">
+            <img class="comment-avatar" src="https://pic1.zhimg.com/da8e974dc_l.jpg" />
+            <textarea class="form-control" rows="2"></textarea>
+        </div>
+        {% module xsrf_form_html() %}
+        <div class="form-group" id="feedback-comment-form-captcha" {% if context.is_need_captcha!=1 %}style="display: none;"{% end %}>
+            <label for="captcha" style="float:left;display: inline;margin-right: 10px;">验证码:</label>
+            <input type="text" class="form-control" style="float:left;width: 75px;" name="captcha" id="captcha">
+            <img src="/show/captcha/validate.gif?r={{ context.r }}" style="float:left;margin-left:3px;" onclick="flushCaptcha(this);" id="captcha_img"/>
+            <br/><br/>
+        </div>
+        <div class="clearfloat"></div>
+        <input type="hidden" value="" name="note_id">
+        <button type="button" onclick="noteCommentSubmit();" class="btn btn-default btn-sm float-r">提交</button>
+        <span style="margin-left:20px;" id="submit-comment"></span>
+    </form>
+</div>
+
+<div class="mt30 show-comments">
+    <div class="clearfix comment-list">
+        <a href="/ucenter/2" style="float: left;">
+            <img class="avatar-30" src="/avatar/2" alt="">
+        </a>
+        <a href="/ucenter/2" class="ml10 f12">王大崔</a>
+        <span class="ml10 f12">
+            2015/11/05 10:06:58
+        </span>
+        <div class="fmt mt10">
+            <p>如果未来可以以类似肌肉纤维的组织形式组装，那就是真正的人造肌肉了吧，那现如今什么电动气动液压动记忆形变驱动全都是玩具了，
+                这才是机器人的未来啊。当然，前提是这个不能像生物肌肉那样容易受到微生物分解才好</p>
+        </div>
+        <ul class="list-inline" style="float:right;">
+            <li><a href="javascript:void(0);">评论</a></li>
+            <li><a href="javascript:void(0);">查看(0)</a></li>
+            <li><a href="javascript:void(0);">举报</a></li>
+        </ul>
+    </div>
+</div>

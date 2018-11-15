@@ -1,0 +1,621 @@
+<style type="text/css">
+.chat-wrapper {
+	z-index:99999;
+	margin:0 auto;
+}
+.bubble-left {
+	float: left;
+	clear: both;
+	background: #B7CC90;
+}
+.bubble-left:hover {
+	background: #A9C07F;
+}
+.bubble-left:before {
+	content: " ";
+	display: block;
+	position: relative;
+	top: 0px;
+	left: -11px;
+	height: 13px;
+	width: 13px;
+	background: inherit; /*#B7CC90*/
+	z-index: 100;
+
+	-webkit-transform: rotate(-45deg);
+       -moz-transform: rotate(-45deg);
+         -o-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+}
+.bubble-right {
+	float: right;
+	clear: both;
+	background: #90B2CC;;
+}
+.bubble-right:hover {
+	background: #82A6C1;
+}
+.bubble-right:before {
+	content: " ";
+	display: block;
+	position: relative;
+	top: 0px;
+	right: -98.8%;
+	height: 13px;
+	width: 13px;
+	background: inherit; /*#90B2CC*/
+
+	-webkit-transform: rotate(-45deg);
+       -moz-transform: rotate(-45deg);
+         -o-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+}
+.message-container {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 2.5%;
+	height: 500px; /*Global Height of Widget*/
+	width: 800px; /*Global Width of Widget*/
+	background: #E1E1E1;
+	box-shadow: 0px 0px 1px #1E1E1E;
+}
+.message-container .title .chat-close {
+	float:right;
+	line-height:25px;
+	height:25px;
+	margin-right:5px;
+	color:#1E1E1E;
+}
+.message-container .head-title {
+	padding:5px;
+	line-height:25px;
+	height:25px;
+}
+.message-container .title {
+	height:25px;
+	background-color:#6A8BBA;
+}
+.message-container > .message-north {
+	width: 100%;
+	height: 100%;
+
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
+}
+.message-container > .message-north > .message-user-list {
+	list-style-type: none;
+	float: left;
+	clear: left;
+	width: 25%;
+	height: 95%;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+.message-container .message-north .message-user-list .chat-user {
+	display: block;
+    padding: 10px;
+    height: auto;
+    text-decoration: none;
+    color: #313131;
+    -webkit-transition: all ease .2s;
+    -moz-transition: all ease .2s;
+    -ms-transition: all ease .2s;
+    -o-transition: all ease .2s;
+    transition: all ease .2s;
+}
+.message-container .message-north .message-user-list .chat-user:hover {
+	background: #9E9E9E;
+	cursor: default;
+	-webkit-transition: all ease .2s;
+	   -moz-transition: all ease .2s;
+	    -ms-transition: all ease .2s;
+	     -o-transition: all ease .2s;
+	        transition: all ease .2s;
+}
+.message-container .message-north .message-user-list .chat-user-close {
+	display: none;
+	float: right;
+	top: -70px;
+	right: 2px;
+}
+.message-container .message-north .message-user-list .chat-user-close:hover {
+	cursor: pointer;
+}
+.message-container .message-north .message-user-list .chat-user .user-item-img {
+	display: block;
+	float: left;
+	height: 40px;
+	width: 40px;
+	background: #6A8BBA;
+}
+.message-container .message-north .message-user-list img {
+	height: 40px;
+	width: 40px;
+}
+.message-container .message-north .message-user-list .chat-user .user-item-title {
+	margin-left: 5px;
+}
+.message-container .message-north .message-user-list .chat-user .user-item-desc {
+	padding-left: 5px;
+	font-size: 12px;
+	color: #5A5A5A;
+    white-space: nowrap;
+	overflow: hidden;
+    text-overflow: ellipsis;
+}
+.message-container > .message-north > .message-user-list a.active {
+	background: #BFBFBF;
+}
+.message-container > .message-north > .message-user-list a.highlight {
+	background: #90B2CC;
+}
+.message-container > .message-north > .message-user-list a.highlight .user-item-title,
+.message-container > .message-north > .message-user-list a.highlight .user-item-desc {
+	font-weight: bold;
+}
+.message-container > .message-north > .message-thread {
+	float: right;
+	width: 75%;
+	height: 77%;
+	padding-left: 10px;
+	padding-right: 10px;
+	background: #F5F5F5;
+	overflow-x: hidden;
+	overflow-y: scroll;
+
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
+}
+.message-container > .message-north > .message-thread > .message {
+	min-width: 40%;
+	max-width: 80%;
+	margin: 5px;
+	margin-bottom: 2%;
+	padding: 3px 5px 3px 5px;
+	cursor: pointer;
+}
+.message-container > .message-north > .message-thread > .message > p {
+	display: block;
+	clear: both;
+	margin-left: 3px;
+	margin-right: 3px;
+	font-size: 13px;
+	word-wrap: break-word;
+	word-break: normal;
+}
+.message-container > .message-north > .message-thread > .message label {
+	margin-top: -13px;
+	font-size: 13px;
+	font-weight: bold;
+	color: #5A5A5A;
+	cursor: pointer;
+}
+.message-container > .message-north > .message-thread > .message .message-user {
+	display: block;
+	float: left;
+	margin-left: 3px;
+}
+.message-container > .message-north > .message-thread > .message .message-timestamp {
+	display: block;
+	float: right;
+	margin-right: 3px;
+	text-align: right;
+}
+.message-container .message-south textarea {
+	width: 65%;
+	float: left;
+	height: 80px;
+	margin: 5px 5px 0 5px;
+	padding: 5px 5px 0 5px;
+	outline: none;
+	resize: none;
+	font-size: 13px;
+	color: #666;
+	background: #f6f6f6;
+	border: 1px solid #b9b9b9;
+	border-top-color: #a4a4a4;
+	box-shadow: 0 1px 1px rgba(0,0,0,.17) inset;
+
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
+}
+.message-container .message-south textarea:focus {
+	background: #FFF;
+}
+.message-container  .message-south #send_chat {
+	display: inline-block;
+	float: right;
+	margin: 5px 5px 5px 0;
+	width: 65px;
+	color: #000000;
+	background: -webkit-linear-gradient(#F5F5F5, #E9E9E9);
+	background:    -moz-linear-gradient(#F5F5F5, #E9E9E9);
+	background:      -o-linear-gradient(#F5F5F5, #E9E9E9);
+	background:         linear-gradient(#F5F5F5, #E9E9E9);
+	border: 2px solid #CCC;
+	box-shadow: 0px 1px 2px #C6C6C6;
+	cursor: pointer;
+}
+.message-container .message-south button:hover {
+	background: -webkit-linear-gradient(#FFFFFF, #DFDFDF);
+	background:    -moz-linear-gradient(#FFFFFF, #DFDFDF);
+	background:      -o-linear-gradient(#FFFFFF, #DFDFDF);
+	background:         linear-gradient(#FFFFFF, #DFDFDF);
+}
+.message-container .message-south button:active {
+	box-shadow: inset 0px 0px 10px #5A5A5A;
+	background: -webkit-linear-gradient(#E9E9E9, #F5F5F5);
+	background:    -moz-linear-gradient(#E9E9E9, #F5F5F5);
+	background:      -o-linear-gradient(#E9E9E9, #F5F5F5);
+	background:         linear-gradient(#E9E9E9, #F5F5F5);
+}
+</style>
+<div class="chatbox">
+	<ul class="tab-im">
+		<li class="imjs-tab">
+			<a class="imjs-tab-text" href="javascript:;" id="show-chat">
+				聊天<b>(0)</b>
+			</a>
+		</li>
+		<li class="imjs-tab">
+			<a class="imjs-tab-text" href="javascript:;" >
+				消息<b>(0)</b>
+			</a>
+		</li>
+	</ul>
+</div>
+
+<div class="chat-wrapper" style="display:none;">
+	<div class="message-container">
+		<div class="title">
+			<span class="head-title">聊天对话框</span>
+			<a href="javascript:;" class='chat-close'><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+		</div>
+		<div class="message-north">
+			<ul class="message-user-list">
+			</ul>
+			<div class="message-thread">
+			</div>
+			<div class="message-south">
+				<form action="/chat/new" method="post" id="chat_form">
+					<textarea cols="20" rows="3" id="chat_textarea" name="body"></textarea>
+					{% module xsrf_form_html() %}
+					<input type="hidden" value="" name="to_user_id">
+					<input type="hidden" value="" name="tab_index">
+					<input type="hidden" value="{{ context.user_info['id'] }}" name="from_user_id">
+					<input type="submit" id="send_chat" value="发送"/>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+var jqXhr = {};
+$(document).ready(function () {
+	$(".chat-wrapper").drag({handle:'div.title', viewArea:true});
+});
+var box_h = $('.chatbox').height();
+var win_height = $(window).height();
+$(".chat-close").click(function(){
+	$('.chat-wrapper').hide();
+});
+$("#show-chat").click(function(){
+	var show_chat_offset = $(this).offset();
+	var scroll_h = $(document).scrollTop();
+	var obj = $('.chat-wrapper');
+	if( obj.is(':visible') ) {
+		obj.hide();
+	} else {
+		obj.css('position', 'absolute');
+		if(win_height<=obj.height() && scroll_h<=obj.height()){
+			var tmp = (scroll_h==0) ? 35 : 0;
+			obj.css('top', parseFloat(tmp+scroll_h)+'px');
+		} else {
+			obj.css('top', parseFloat(show_chat_offset.top-box_h-obj.height()+15)+'px');
+		}
+		obj.css('left', parseFloat(show_chat_offset.left-obj.width()+120)+'px');
+		obj.show();
+	}
+});
+
+var msg_thread = $('.message-thread');
+
+//信息列表
+var msg_thread_line = "	<div class='message bubble-{directing}'> \
+							<label class='message-user'>{who}</label> \
+							<label class='message-timestamp'>{time}</label> \
+							<p>{msg}</p>	\
+						</div>";
+
+//用户列表
+var msg_users = "<li data-id='{user_id}' id='chat_user_{user_id}'>	\
+					<a href='javascript:;' class='chat-user'>	\
+						<span class='user-item-img'><img src='{user_avatar}' /></span>	\
+						<span class='user-item-title'>{user_name}</span>	\
+						<p class='user-item-desc'>{desc}</p>	\
+					</a>	\
+					<span class='glyphicon glyphicon-remove chat-user-close' data-id='{user_id}' aria-hidden='true'></span> \
+				</li>";
+var chat_textarea = $('#chat_textarea');
+function chat_bottom(){
+	var scroll_height = msg_thread[0].scrollTop + msg_thread.height();
+	msg_thread.animate({scrollTop: scroll_height}, 500);
+}
+//增加系统提示信息
+function add_sys_msg(content) {
+	var tmp_msg = msg_thread_line;
+	tmp_msg = tmp_msg.replace("{directing}", "left");
+	tmp_msg = tmp_msg.replace("{who}", "系统");
+	tmp_msg = tmp_msg.replace("{time}", curentDateTime());
+	tmp_msg = tmp_msg.replace("{msg}", '<font style="color:#dd0000;">'+content+'</font>');
+	msg_thread.append(tmp_msg);
+	chat_bottom();
+}
+//发送消息
+$('#send_chat').click(function(e) {
+	var to_user_id = $("input[name='to_user_id']").val();
+	var from_user_id = $("input[name='from_user_id']").val();
+	var tmp_msg = msg_thread_line;
+		tmp_msg = tmp_msg.replace("{directing}", "left");
+		tmp_msg = tmp_msg.replace("{who}", "系统");
+		tmp_msg = tmp_msg.replace("{time}", curentDateTime());
+
+	if($.trim(from_user_id)=='' || typeof getCookie('from_uid')=='undefined') {
+		tmp_msg = tmp_msg.replace("{msg}", '<font style="color:#dd0000;">请先登录</font>');
+		msg_thread.append(tmp_msg);
+		chat_bottom();
+		return;
+	}
+	if($.trim(to_user_id)=='') {
+		tmp_msg = tmp_msg.replace("{msg}", '<font style="color:#dd0000;">对方不在对话列表中</font>');
+		msg_thread.append(tmp_msg);
+		chat_bottom();
+		return;
+	}
+});
+
+//请求对话信息列表
+function getMsgList(to_user_id, from_user_id, msg_list_obj, args, need_poll) {
+	$('#chat_form input[name="to_user_id"]').val(to_user_id);
+	$.postJSON('/chat/msglist', args, function(respones2) {
+		msg_list_obj.html('');
+		$.each(respones2, function (i2, item2) {
+			var temp_msg_list = msg_thread_line;
+			if (from_user_id == item2.uid) {
+				temp_msg_list = temp_msg_list.replace('{directing}', 'right');
+			} else {
+				temp_msg_list = temp_msg_list.replace('{directing}', 'left');
+			}
+			temp_msg_list = temp_msg_list.replace('{who}', item2.name);
+			temp_msg_list = temp_msg_list.replace('{time}', item2.time);
+			temp_msg_list = temp_msg_list.replace('{msg}', item2.msg);
+			msg_list_obj.append(temp_msg_list);
+		});
+		chat_bottom();
+		if( need_poll===true ) {
+			$('#chat_form input[name="to_user_id"]').val(to_user_id);
+			$.each(jqXhr, function(n, v){
+				jqXhr[n].abort();
+		   	});
+			jqXhr[to_user_id] = sendPoll(to_user_id);
+		}
+	});
+}
+//点击用户显示msg
+function clickUserForMsg(chat_user_item, from_user_id, msg_list_obj, tab_index) {
+	chat_user_item.off('click');
+	chat_user_item.find('a').on('click', function(){
+		$(this).addClass('active');
+		$(this).parent('li').siblings().children('a').removeClass('active');
+		var to_user_id = $(this).parent('li').attr('data-id');
+		var args = {to_user_id: to_user_id, tab_index: tab_index};
+
+		getMsgList(to_user_id, from_user_id, msg_list_obj, args, true);
+	});
+}
+
+//推送
+function sendPoll(id) {
+	//////////////////////////////////begin///////////////////////////////////
+	var chat_form = $("#chat_form");
+	chat_form.off("submit");
+	chat_form.off("keypress");
+
+	//触发poll动作
+	//为表单的submit添加函数
+	chat_form.on("submit", function() {
+		newMessage($(this));
+		return false;
+	});
+
+	chat_form.on("keypress", function(e) {
+		if(e.keyCode == 13) {
+			newMessage($(this));
+			return false;
+		}
+	});
+
+	chat_form.select();
+
+	//从服务端poll消息，服务端会保持长连接
+	return updater.poll(id);
+	//////////////////////////////////end///////////////////////////////////
+}
+
+//加载发送对方id 显示消息列表
+$('#show-chat').click(function(){
+	var to_user_id = $('#chat_form input[name="to_user_id"]').val();
+	var from_user_id = $('#chat_form input[name="from_user_id"]').val();
+	var args = {to_user_id: to_user_id};
+	var user_list_obj = $('.message-user-list');
+	var msg_list_obj = $('.message-thread');
+	user_list_obj.html('');
+	var reg = new RegExp('{user_id}', "g");
+	$.postJSON("/chat/index", args, function(response) {
+		var tab_index = response.tab_index;
+		$('#chat_form input[name="tab_index"]').val(tab_index);
+		var default_user = response.default_user;
+		$.each(response.user_list, function(i, item){
+			tmp_msg_users = msg_users;
+			tmp_msg_users = tmp_msg_users.replace(reg, item['id']);
+			tmp_msg_users = tmp_msg_users.replace('{user_avatar}', '/avatar/'+item['avatar']);
+			tmp_msg_users = tmp_msg_users.replace('{user_name}', item['user_name']);
+			tmp_msg_users = tmp_msg_users.replace('{desc}', item['user_email']);
+			user_list_obj.append(tmp_msg_users);
+
+			var chat_user_item = $('#chat_user_'+item['id']);
+
+			//判断默认的对话用户
+			if( default_user==item['id'] ) {
+				getMsgList(response.default_user, from_user_id, msg_list_obj, {to_user_id: default_user}, false);
+			}
+
+			clickUserForMsg(chat_user_item, from_user_id, msg_list_obj, tab_index);
+
+			//绑定关闭聊天用户动作
+			chat_user_item.hover(
+				function() {
+					chat_user_item.find('.chat-user-close').show();
+				},
+				function() {
+					chat_user_item.find('.chat-user-close').hide();
+				}
+			);
+
+			//绑定关闭用户动作
+			chat_user_item.find('.chat-user-close').on("click", function(){
+				$.postJSON("/chat/closeuser", {'to_user_id': $(this).attr('data-id')}, function(close_user_resp){
+					if( close_user_resp.code=='success' ) {
+						chat_user_item.remove();
+					}
+				});
+			});
+		});
+	});
+});
+
+function newMessage(form) {
+	var message = form.formToDict();
+    var disabled = form.find("input[type=submit]");
+	disabled.disable();
+	// POST新消息到服务端
+    $.postJSON("/chat/new", message, function(response) {
+		if(response.status=='logout') {
+			add_sys_msg('请先登录！');
+		}
+        // 服务端会返回完整的新消息，并加上message id
+        // 在页面显示新消息
+        updater.showMessage(response);
+        form.find("#chat_textarea").val("").select();
+		disabled.enable();
+	});
+
+	// 当server重启后
+	// ajax因为错误和/poll_message尝试连接的间隔越来越长
+	// 这里判断当 updater.errorSleepTime 大于 500
+	// 表明/pool_message发生错误
+	// 在这里执行是因为发送新消息成功，说明server已经恢复正常
+	// 但是/pool_message尚未请求，所以立即请求/pool_message
+	if (updater.errorSleepTime > 500)
+	{
+		window.setTimeout(updater.poll, 0);
+	}
+}
+
+var updater = {
+	errorSleepTime: 500,
+	cursor: null,
+
+	poll: function(id) {
+        var args = {"_xsrf": getCookie("_xsrf")};
+        args.to_user_id = $("input[name='to_user_id']").attr("value");
+        args.from_user_id = $("input[name='from_user_id']").attr("value");
+		args.tab_index = $("input[name='tab_index']").attr("value");
+        // 设置使用长连接从服务端poll消息时的cursor
+        // 即发送新消息时，从服务端返回的message id
+        if (updater.cursor) args.cursor = updater.cursor;
+        // 从服务端使用长连接poll消息
+        // 返回消息则把消息显示到页面
+		if(typeof jqXhr[id]!='undefined') {
+			jqXhr[id].abort();
+		}
+		xhr_temp = $.ajax({	url: "/chat/updates",
+							type: "POST",
+							dataType: "text",
+							data: $.param(args),
+							success: function(res){
+								updater.onSuccess(id, res);
+							},
+							error: function(res){
+								updater.onError(id, res);
+							}
+		});
+		jqXhr[id] = xhr_temp;
+		return xhr_temp;
+    },
+
+	stop: function(jqXhr) {
+		if(jqXhr && jqXhr.readyState!=4){
+			jqXhr.about();
+		}
+	},
+
+	onSuccess: function(id, response) {
+        try {
+            updater.newMessages(eval("(" + response + ")"));
+        } catch (e) {
+            updater.onError();
+            return;
+        }
+        updater.errorSleepTime = 500;
+        window.setTimeout(function(id){
+			return updater.poll(id);
+		}, 0);
+    },
+
+    onError: function(id, response) {
+        updater.errorSleepTime *= 2;
+        console.log("Poll error; sleeping for", updater.errorSleepTime, "ms");
+        window.setTimeout(function(id){
+			return updater.poll(id);
+		}, updater.errorSleepTime);
+    },
+
+	newMessages: function(response) {
+        if (!response.messages){
+			console.log("it\'s wrong");
+			return;
+		}
+        var messages = response.messages;
+        updater.cursor = messages[messages.length - 1].id;
+		updater.to_user_id = messages[messages.length - 1].to_user_id;
+        console.log(messages.length, "new messages, cursor:", updater.cursor, "to_user_id:"+updater.to_user_id);
+        for (var i = 0; i < messages.length; i++) {
+            updater.showMessage(messages[i]);
+        }
+    },
+
+	showMessage: function(message) {
+        // 根据message id查找重复消息
+        var existing = $("#m" + message.id);
+        // 如果消息已经存在则不添加
+        // 这是因为在发送新消息时，服务端会把消息原封不动的返回
+        // 再加上update取得的消息，就会发生消息重复
+        if (existing.length > 0) return;
+		var html_str = message.html;
+		var directing = '';
+		if(message.from==getCookie('from_uid')) {
+			directing = 'right';
+		} else {
+			directing = 'left';
+		}
+		html_str = html_str.replace('{directing}', directing);
+        $(".message-thread").append($(html_str));
+		chat_bottom();
+    }
+}
+</script>

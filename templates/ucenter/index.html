@@ -1,0 +1,29 @@
+{% extends ../base.html %}
+{% block js_head_content %}
+{% end %}
+
+{% block content %}
+<div class="row mt20">
+    {% if context.selected_menu!='preview_note' %}
+    <div class="col-md-3" style="width:21%;">
+        {% include './include/left_menu.html' %}
+    </div>
+    {% end %}
+    <div class="col-md-9">
+    {% if context.selected_menu=='news_feed' %}
+        {% include './include/news_feed.html' %}
+    {% elif context.selected_menu=='note' %}
+        {% include './include/note.html' %}
+    {% elif context.selected_menu=='preview_note' %}
+        {% include './include/preview_note.html' %}
+    {% else %}
+    {% end %}
+    </div>
+</div>
+{% end %}
+
+{% block js_content %}
+<script>
+toTopAnchor();
+</script>
+{% end %}

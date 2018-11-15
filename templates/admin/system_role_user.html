@@ -1,0 +1,221 @@
+{% extends base.html %}
+{% block css %}
+<link rel="stylesheet" href="/static/admin/css/ui.jqgrid.css" />
+{% end %}
+{% block breadcrumb %}
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>
+            <a href="#">权限管理</a>
+        </li>
+        <li class="active">管理员&角色列表</li>
+    </ul>
+{% end %}
+{% block page_header %}
+{% end %}
+{% block content %}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="row">
+            <div class="col-xs-12 col-sm-5 col-md-7" >
+                <div class="alert alert-danger hide" id="form-error"></div>
+                <div class="widget-box">
+                    <div class="widget-header">
+                        <h4>管理员&角色表单</h4>
+                        <div class="widget-toolbar">
+                            <a href="#" data-action="collapse">
+                                <i class="icon-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="widget-body">
+                        <div class="widget-main">
+                            <form class="form-horizontal" role="form" id="role_user_form" method="post">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-admin_user">管理员</label>
+                                    <div class="col-sm-5">
+                                        <select class="form-control" id="form-field-admin_user" name="user_id" data-require>
+                                            <option value=''>请选择……</option>
+                                            {% for item in context.admin_users %}
+											<option value="{{item.id}}">{{item.admin_name}}</option>
+                                            {% end %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="space-4"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-field-role">角色</label>
+                                    <div class="col-sm-5">
+                                        <select class="form-control" id="form-field-role" name="role_id" data-require>
+                                            <option value=''>请选择……</option>
+                                            {% for item in context.roles %}
+											<option value="{{item.id}}">{{item.role_name}}</option>
+                                            {% end %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="space-4"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right">状态</label>
+                                    <div class="radio">
+                                        <label>
+                                            <input name="status" type="radio" class="ace" data-require checked value="1"/>
+                                            <span class="lbl">正常</span>
+                                        </label>
+                                        <label>
+                                            <input name="status" type="radio" class="ace" data-require value="0"/>
+                                            <span class="lbl">禁止</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="space-4"></div>
+                                <div class="clearfix ">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <button class="btn btn-xs btn-info" type="button" onclick="operateInfoAndRefresh(this,'role_user_form', 'grid-table');"  data-action="jqgrid-add" data-url="/admin/system/roleuser">
+                                            <i class="icon-ok bigger-110"></i>
+                                            添加
+                                        </button>
+                                        &nbsp; &nbsp;
+                                        <button class="btn btn-xs btn-info" type="button" onclick="operateInfoAndRefresh(this,'role_user_form', 'grid-table');"  data-action="jqgrid-search" data-url="/admin/system/roleuser">
+                                            <i class="icon-search bigger-110"></i>
+                                            搜索
+                                        </button>
+                                        &nbsp; &nbsp;
+                                        <button class="btn btn-xs" type="reset">
+                                            <i class="icon-undo bigger-110"></i>
+                                            重置
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="space-7"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table id="grid-table"></table>
+		<div id="grid-pager"></div>
+    </div>
+</div>
+{% end %}
+{% block js_content %}
+<script src="/static/admin/js/jqGrid/jquery.jqGrid.min.js"></script>
+<script src="/static/admin/js/jqGrid/i18n/grid.locale-en.js"></script>
+<script src="/static/admin/js/jquery.validate.min.js"></script>
+<script src="/static/admin/js/common.js"></script>
+<script>
+//http://www.trirand.com/blog/jqgrid/jqgrid.html http://blog.mn886.net/jqGrid/
+$(document).ready(function(){
+    var _xsrf = getCookie("_xsrf");
+    var role_id = {{context.role_id}};
+    $("#grid-table").jqGrid({   //myTab:装在数据的table id
+        datatype: "json", //将这里改为使用JSON数据
+        url:'/admin/system/roleuser', //这是数据的请求地址
+        postData:{_xsrf:_xsrf , act:'list', role_id:role_id},
+        mtype: 'post',
+        height: 300,
+        autowidth:true,
+        colNames:['操作', '编号', '管理员', '角色', '创建时间', '更新时间', '状态', '用户ID', '角色ID'],
+        colModel:[
+            {name:'operate',index:'', width:80, fixed:true, sortable:false, resize:false,
+                        formatter:'actions',
+                        formatoptions:{
+                            keys:true,
+                            delOptions:{recreateForm: true, beforeShowForm:beforeDeleteCallback,
+                                        url: "/admin/system/roleuser",
+                                        mtype: 'post',
+                                        serializeDelData: function(postData) {
+                                                            return { 'postData': JSON.stringify(postData), _xsrf:_xsrf, act:'delete-one', role_id:role_id}
+                                               }
+                            },
+                            editformbutton:true,
+                            editOptions:{recreateForm: true, beforeShowForm:function(form){
+                                                                                    beforeEditCallback;
+                                                                                    $('#tr_role_id', form).remove();
+                                                                                    $('#tr_user_id', form).remove();
+                                                                                  },
+                                            url: "/admin/system/roleuser",
+                                            mtype: 'post',
+                                            serializeEditData: function(postData) {
+                                                                    return { 'postData': JSON.stringify(postData), _xsrf:_xsrf, act:'edit', role_id:role_id}
+                                                               }
+                            }
+                        }
+                    },
+            {name:'id',index:'id', sorttype:"int",sortable: false},
+            {name:'admin_name',index:'admin_name',sortable: false},
+            {name:'role_name',index:'role_name',sortable: false},
+            {name:'create_time',index:'create_time',sortable: false},
+            {name:'update_time',index:'update_time',sortable: false},
+            {name:'status',index:'status',editable: true, sortable: false,
+                edittype:'select', editoptions:{value:{1:'正常',0:'禁止'}},
+                formatter:function(cellvalue, options, rowObject){
+                                    if(cellvalue==1){
+                                        return '<span class="label label-sm label-info arrowed arrowed-righ">正常</span>';
+                                    }else{
+                                        return '<span class="label label-sm label-error arrowed arrowed-righ">禁止</span>';
+                                    }
+                            }
+            },
+            {name:'role_id',index:'role_id',hidden:true, editable: true, viewable: true},
+            {name:'user_id',index:'user_id',hidden:true, editable: true,viewable: true}
+        ],
+        pager: 'grid-pager', //分页工具栏，pager:分页DIV的id
+        viewrecords: true, //是否显示行数
+        multiselect: true, //是否支持多选
+        loadComplete : function() {
+						var table = this;
+						setTimeout(function(){
+							updatePagerIcons(table);
+						}, 0);
+					}
+    });
+    $('#grid-table').jqGrid('navGrid','#grid-pager',
+                    {
+                        edit: true,
+						editicon : 'icon-pencil blue',
+						add: false,
+						addicon : 'icon-plus-sign purple',
+						del: true,
+						delicon : 'icon-trash red',
+						search: false,
+						searchicon : 'icon-search orange',
+						refresh: true,
+						refreshicon : 'icon-refresh green',
+						view: true,
+						viewicon : 'icon-zoom-in grey'
+                    },
+                    {url: "/admin/system/roleuser", mtype: 'post',closeAfterEdit: true,
+                        beforeShowForm: function(form) {
+                            $('#tr_role_id', form).remove();
+                            $('#tr_user_id', form).remove();
+                        },
+                        serializeEditData: function(postData) {
+                                                return { 'postData': JSON.stringify(postData), _xsrf:_xsrf, act:'edit', role_id:role_id}
+                        }
+                    },
+                    {url: "/admin/system/roleuser", mtype: 'post',closeAfterAdd: true , serializeAddData: function(postData) {
+                                            return { 'postData': JSON.stringify(postData), _xsrf:_xsrf, act:'add'}}
+                    },
+                    {url: "/admin/system/roleuser", mtype: 'post',serializeDelData: function(postData) {
+                                            return { 'postData': JSON.stringify(postData), _xsrf:_xsrf, act:'delete', role_id:role_id}}
+                    }
+     );
+    //表单验证
+    $('#role_user_form').validate({
+        errorElement: 'div',
+        errorClass: 'alert-danger',
+        focusInvalid: true,
+        rules: {
+            user_id: "required",
+            role_id: "required"
+        },
+        messages: {
+            user_id: "请选择管理员名称！",
+            role_id: "请选择角色名称！"
+        }
+    });
+});
+</script>
+{% end %}

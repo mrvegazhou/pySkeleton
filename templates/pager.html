@@ -1,0 +1,8 @@
+{% if context.page_str!='' %}
+<nav>
+  <ul class={% if context.has_key('page_class') %}"{{ context.page_class }}"{% else %}"pagination"{% end %}
+            {% if context.has_key('page_style') %}style="{{ context.page_style }}"{% end %}>
+    {% raw context.page_str %}
+  </ul>
+</nav>
+{% end %}
